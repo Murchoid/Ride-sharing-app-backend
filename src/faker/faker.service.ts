@@ -54,7 +54,6 @@ export class FakerService {
 
     fakeBooking(driverId: string, customerId: string): CreateBookingDto {
         return {
-            driverId,
             customerId,
             pickupAddress: faker.location.streetAddress(),
             dropoffAddress: faker.location.streetAddress(),

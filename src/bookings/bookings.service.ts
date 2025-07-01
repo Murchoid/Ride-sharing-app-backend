@@ -21,13 +21,13 @@ export class BookingsService {
   ){}
 
   async create(createBookingDto: CreateBookingDto) {
-    let { driverId, customerId, pickupLng, pickupLat, dropoffLat, dropoffLng, distanceKm, price, durationMins } = createBookingDto;
-    if(!driverId) throw new NotFoundException("Driver id must be provided!");
+    let { customerId, pickupLng, pickupLat, dropoffLat, dropoffLng, distanceKm, price, durationMins } = createBookingDto;
     if(!customerId) throw new NotFoundException("Customer id must be provided");
-    const driver = await this.driverRepo.findBy({
-      id: In([driverId])
+    
+    const drivers = await this.driverRepo.findBy({
+      isAvailable: true
     });
-    if(!driver) throw new NotFoundException('Drivers not found!');
+    if(!drivers) return "No driver is available now try again later";
     const user = await this.userRepo.findBy({
       id: In([customerId])
     });
@@ -44,9 +44,15 @@ export class BookingsService {
     durationMins = Math.floor(durationAtoB);
     price = Math.floor(calculated_price);
 
+    //function to calculate closest driver
+    const driver = await this.distanceService.findClosestDriver(
+      pickupLat,pickupLng, drivers
+    );
+
+
     const preparedBooking = this.bookingRepo.create({
       ...createBookingDto,
-      driver: driver[0],
+      driver: driver as Driver,
       customer: user[0],
       distanceKm,
       durationMins,

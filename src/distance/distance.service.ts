@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Driver } from 'src/drivers/entities/driver.entity';
 
 @Injectable({})
 export class DistanceService {
@@ -32,6 +33,24 @@ export class DistanceService {
         return response.json();
     }
 
+    private haversineDistance(coord1, coord2) {
+            const R = 6371; // Earth radius in km
+            const toRad = angle => angle * (Math.PI / 180);
+
+            const dLat = toRad(coord2.lat - coord1.lat);
+            const dLon = toRad(coord2.lng - coord1.lng);
+
+            const a =   Math.sin(dLat / 2) ** 2 +
+                        Math.cos(toRad(coord1.lat)) *
+                        Math.cos(toRad(coord2.lat)) *
+                        Math.sin(dLon / 2) ** 2;
+
+                        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            return R * c;
+    }
+
+
     async calculatePriceandReturnDuraiton(
         pickupLat: number, pickupLng: number,
         dropoffLat: number, dropoffLng: number
@@ -56,4 +75,25 @@ export class DistanceService {
             distance_Km
         }
     }
+    
+    async findClosestDriver(
+            pickupLat: number, pickupLng: number,
+            drivers: Driver[]
+        ){
+            const pickup = {lat:pickupLat, lng:pickupLng};
+            let closest: Driver | null= null;
+            let minDistance = Infinity;
+
+            for (const driver of drivers) {
+                    let driverCood = {lat:driver.baseLat, lng: driver.baseLng};
+                    const distance = this.haversineDistance(pickup, driverCood);
+                    if (distance < minDistance) {
+                            minDistance = distance;
+                            closest = driver;
+                    }
+            }
+
+            return closest;
+
+        }
 }

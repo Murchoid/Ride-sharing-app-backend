@@ -15,9 +15,6 @@ enum ePAYMENTSMETHOD{
 
 export class CreateBookingDto {
     @IsUUID()
-    driverId: string;
-
-    @IsUUID()
     customerId: string;
 
     @IsString()

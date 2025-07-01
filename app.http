@@ -95,7 +95,6 @@ POST {{url}}/bookings
 Content-Type: application/json
 
 {
-  "driverId": "e96cb0d4-9f83-416c-924e-c1ecbc052e52",
   "customerId": "dbf0f12e-6fc8-43d4-94e0-e5954e6ead06",
   "pickupAddress": "123 Main St",
   "dropoffAddress": "456 Elm St",
