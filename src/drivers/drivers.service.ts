@@ -1,26 +1,58 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDriverDto } from './dto/create-driver.dto';
 import { UpdateDriverDto } from './dto/update-driver.dto';
+import { Driver } from './entities/driver.entity';
+import { Repository } from 'typeorm';
+import { DriversModule } from './drivers.module';
+import { NotFoundException } from '@nestjs/common';
+import { User } from 'src/users/entities/user.entity';
+import { UsersModule } from 'src/users/users.module';
 
 @Injectable()
 export class DriversService {
-  create(createDriverDto: CreateDriverDto) {
-    return 'This action adds a new driver';
+  constructor(
+    @InjectRepository(Driver)
+    private readonly driverRepo: Repository<DriversModule>,
+    @InjectRepository(User)
+    private readonly userRepo: Repository<UsersModule>
+  ){}
+  async create(createDriverDto: CreateDriverDto) {
+    //logic to check for user and save
+    const { userId } = createDriverDto;
+    if(!userId) throw new NotFoundException('User id must be provided');
+    const user = await this.userRepo.findOneBy({
+      where:{id: userId}
+    });
+    if(!user) throw new NotFoundException('User not found!');
+    const preparedDriver = this.driverRepo.create({
+      ...createDriverDto,
+      user
+    })
+
+    const driver = await this.driverRepo.save(createDriverDto);
+    return driver;
   }
 
-  findAll() {
-    return `This action returns all drivers`;
+  async findAll() {
+    const driver = await this.driverRepo.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} driver`;
+  async findOne(id: number) {
+    const driver = await this.driverRepo.findOneBy({
+      where:{id}
+    });
+
+    return driver;
   }
 
-  update(id: number, updateDriverDto: UpdateDriverDto) {
-    return `This action updates a #${id} driver`;
+  async update(id: number, updateDriverDto: UpdateDriverDto) {
+    const driver = await this.driverRepo.update(id, updateDriverDto);
+    return driver;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} driver`;
+  async remove(id: number) {
+    const driver = await this.driverRepo.delete(id);
+    return driver;
   }
 }
