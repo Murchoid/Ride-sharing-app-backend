@@ -22,7 +22,7 @@ export class DriversService {
     const { userId } = createDriverDto;
     if(!userId) throw new NotFoundException('User id must be provided');
     const user = await this.userRepo.findOneBy({
-      where:{id: userId}
+      id: userId.toString()
     });
     if(!user) throw new NotFoundException('User not found!');
     const preparedDriver = this.driverRepo.create({
@@ -36,11 +36,12 @@ export class DriversService {
 
   async findAll() {
     const driver = await this.driverRepo.find();
+    return driver;
   }
 
   async findOne(id: number) {
     const driver = await this.driverRepo.findOneBy({
-      where:{id}
+      id: id.toString()
     });
 
     return driver;

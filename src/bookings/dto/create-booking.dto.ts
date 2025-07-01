@@ -1,4 +1,4 @@
-import { IsEnum, IsNumber, IsString, IsUUID } from "class-validator";
+import { IsEnum, IsNumber, IsOptional, IsString, IsUUID } from "class-validator";
 
 enum ePAYMENTSTUTUS{
        PENDING='PENDING',
@@ -39,12 +39,15 @@ export class CreateBookingDto {
     dropoffLng: number;
     
     @IsNumber()
+    @IsOptional()
     distanceKm: number;
     
     @IsNumber()
+    @IsOptional()
     durationMins: number;
     
     @IsNumber()
+    @IsOptional()
     price: number;
     
     @IsEnum(ePAYMENTSTUTUS)

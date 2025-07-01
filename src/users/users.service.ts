@@ -4,14 +4,13 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
-import { UsersModule } from './users.module';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepo: Repository<UsersModule>
+    private readonly userRepo: Repository<User>
   ){}
   async create(createUserDto: CreateUserDto) {
     let {password} = createUserDto;
@@ -33,7 +32,7 @@ export class UsersService {
 
   async findOne(id: number) {
     const user = await this.userRepo.findOneBy({
-      where:{id}
+      id: id.toString()
     });
     return user;
   }

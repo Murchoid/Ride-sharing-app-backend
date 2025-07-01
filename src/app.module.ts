@@ -5,7 +5,6 @@ import { UsersModule } from './users/users.module';
 import { DriversModule } from './drivers/drivers.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
-import { DistanceModule } from './distance/distance.module';
 import { ConfigsModule } from './configs/configs.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -19,7 +18,6 @@ import { FakerModule } from './faker/faker.module';
     DriversModule,
     BookingsModule,
     VehiclesModule,
-    DistanceModule,
     ConfigsModule,
     CacheModule.registerAsync({
       imports: [ConfigModule],

@@ -3,25 +3,23 @@ import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Vehicle } from './entities/vehicle.entity';
-import { VehiclesModule } from './vehicles.module';
 import { Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { Driver } from 'src/drivers/entities/driver.entity';
-import { DriversModule } from 'src/drivers/drivers.module';
 
 @Injectable()
 export class VehiclesService {
   constructor(
     @InjectRepository(Vehicle)
-    private readonly vehicleRepo: Repository<VehiclesModule>,
+    private readonly vehicleRepo: Repository<Vehicle>,
     @InjectRepository(Driver)
-    private readonly driverRepo: Repository<DriversModule>
+    private readonly driverRepo: Repository<Driver>
   ){}
   async create(createVehicleDto: CreateVehicleDto) {
     const {driverId} = createVehicleDto;
     if(!driverId) throw new NotFoundException('Driver id must be provided');
     const driver = await this.driverRepo.findOneBy({
-      where:{id:driverId}
+      id:driverId.toString()
     });
     if(!driver) throw new NotFoundException('Driver not found!');
 
@@ -41,7 +39,7 @@ export class VehiclesService {
 
   async findOne(id: number) {
     const vehicle = await this.vehicleRepo.findOneBy({
-      where:{id}
+      id:id.toString()
     });
     return vehicle;
   }
