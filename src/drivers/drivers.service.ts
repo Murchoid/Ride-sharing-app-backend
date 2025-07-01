@@ -13,9 +13,9 @@ import { UsersModule } from 'src/users/users.module';
 export class DriversService {
   constructor(
     @InjectRepository(Driver)
-    private readonly driverRepo: Repository<DriversModule>,
+    private readonly driverRepo: Repository<Driver>,
     @InjectRepository(User)
-    private readonly userRepo: Repository<UsersModule>
+    private readonly userRepo: Repository<User>
   ){}
   async create(createDriverDto: CreateDriverDto) {
     //logic to check for user and save

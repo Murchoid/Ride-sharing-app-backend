@@ -29,14 +29,14 @@ export class BookingsService {
       id: In([driverId])
     });
     if(!driver) throw new NotFoundException('Drivers not found!');
-    const user = await this.userRepo.findBy({
+    const customer = await this.userRepo.findBy({
       id: In([customerId])
     });
-    if(!user) throw new NotFoundException('Customers not found!');
+    if(!customer) throw new NotFoundException('Customers not found!');
 
     const preparedBooking = this.bookingRepo.create({
       ...createBookingDto,
-      user,
+      customer,
       driver
     })
 

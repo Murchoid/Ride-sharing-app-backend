@@ -1,3 +1,131 @@
 @url=http://localhost:3000
-###
+
+### Seed fake data (clears and seeds all tables)
 POST {{url}}/faker
+
+### Create a user
+POST {{url}}/users
+Content-Type: application/json
+
+{
+  "name": "Jane Doe",
+  "email": "jane.doe@example.com",
+  "password": "securePassword123",
+  "role": "CUSTOMER"
+}
+
+### Get all users
+GET {{url}}/users
+
+### Get a user by id
+GET {{url}}/users/:id
+
+### Update a user
+PUT {{url}}/users/:id
+Content-Type: application/json
+
+{
+  "name": "Jane Updated",
+  "email": "jane.updated@example.com"
+}
+
+### Delete a user
+DELETE {{url}}/users/:id
+
+### Create a driver
+POST {{url}}/drivers
+Content-Type: application/json
+
+{
+  "userId": "REPLACE_WITH_USER_ID",
+  "isAvailable": true,
+  "baseLat": -1.2921,
+  "baseLng": 36.8219
+}
+
+### Get all drivers
+GET {{url}}/drivers
+
+### Get a driver by id
+GET {{url}}/drivers/:id
+
+### Update a driver
+PUT {{url}}/drivers/:id
+Content-Type: application/json
+
+{
+  "isAvailable": false,
+  "baseLat": -1.3000,
+  "baseLng": 36.8000
+}
+
+### Delete a driver
+DELETE {{url}}/drivers/:id
+
+### Create a vehicle
+POST {{url}}/vehicles
+Content-Type: application/json
+
+{
+  "model": "Toyota Prius",
+  "plate": "KDA123A",
+  "driverId": "REPLACE_WITH_DRIVER_ID"
+}
+
+### Get all vehicles
+GET {{url}}/vehicles
+
+### Get a vehicle by id
+GET {{url}}/vehicles/:id
+
+### Update a vehicle
+PUT {{url}}/vehicles/:id
+Content-Type: application/json
+
+{
+  "model": "Toyota Corolla",
+  "plate": "KDA999B"
+}
+
+### Delete a vehicle
+DELETE {{url}}/vehicles/:id
+
+### Create a booking
+POST {{url}}/bookings
+Content-Type: application/json
+
+{
+  "driverId": "REPLACE_WITH_DRIVER_ID",
+  "customerId": "REPLACE_WITH_USER_ID",
+  "pickupAddress": "123 Main St",
+  "dropoffAddress": "456 Elm St",
+  "pickupLat": -1.2921,
+  "pickupLng": 36.8219,
+  "dropoffLat": -1.3000,
+  "dropoffLng": 36.8000,
+  "distanceKm": 5.2,
+  "durationMins": 15,
+  "price": 500,
+  "stutus": "PENDING",
+  "paymentStatus": "PENDING",
+  "paymentMethod": "CASH"
+}
+
+### Get all bookings
+GET {{url}}/bookings
+
+### Get a booking by id
+GET {{url}}/bookings/:id
+
+### Update a booking
+PUT {{url}}/bookings/:id
+Content-Type: application/json
+
+{
+  "pickupAddress": "789 New St",
+  "dropoffAddress": "1010 New Ave",
+  "price": 600
+}
+
+### Delete a booking
+DELETE {{url}}/bookings/:id
