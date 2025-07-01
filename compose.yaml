@@ -1,0 +1,81 @@
+services:  
+  ride-sharing-app:
+    image: postgres:15-alpine
+    container_name: ride-sharing-app
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRE_USER}
+      POSTGRES_PASSWORD: ${POSTGRE_PASS}
+      POSTGRES_DB: ${POSTGRE_DB}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    ports:
+      - "5432:5432"
+    networks:
+      - rsa-network
+    volumes: 
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  redis:
+      image: redis:8.0-alpine
+      container_name: redis-cache
+      restart: unless-stopped
+      command: ["redis-server"]
+      ports:
+        - "13694:13694" 
+      volumes:
+        - redis-data:/data
+      networks:
+        - rsa-network
+      healthcheck:
+        test: ["CMD", "redis-cli", "ping"]
+        interval: 30s
+        timeout: 10s
+        retries: 3
+
+  rsa-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rsa-app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - POSTGRE_HOST=${POSTGRE_HOST}
+      - POSTGRE_PORT=${POSTGRE_PORT}
+      - POSTGRE_DB=${POSTGRE_DB}
+      - POSTGRE_USER=${POSTGRE_USER}
+      - POSTGRE_PASS=${POSTGRE_PASS}
+      - REDIS_URL=${REDIS_URL}
+      - JWT_ACCESS_TOKEN_SECRET=${JWT_ACCESS_TOKEN_SECRET}
+      - JWT_ACCESS_TOKEN_EXPIRATION_TIME=${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
+      - JWT_REFRESH_TOKEN_SECRET=${JWT_REFRESH_TOKEN_SECRET}
+      - JWT_REFRESH_TOKEN_EXPIRATION_TIME=${JWT_REFRESH_TOKEN_EXPIRATION_TIME}
+      - THROTTLE_TTL=${T_TTL}
+      - THROTTLE_LIMIT=${T_LIMIT}
+    depends_on:
+      redis:
+        condition: service_healthy
+      ride-sharing-app:
+        condition: service_healthy
+    networks:
+      - rsa-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+volumes:
+  pgdata:
+    name: ride-sharing-app-data
+    driver: local
+  redis-data:
+    name: ride-sharing-app-data
+    driver: local
+
+networks: 
+  rsa-network:
+    driver: bridge
