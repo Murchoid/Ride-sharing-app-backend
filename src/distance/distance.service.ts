@@ -22,6 +22,7 @@ export class DistanceService {
       ],
     });
 
+    //TODO: catch the errors and display meaningful messages
     const response = await fetch(
       'https://api.openrouteservice.org/v2/directions/driving-car/geojson',
       {
