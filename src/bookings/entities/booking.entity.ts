@@ -38,13 +38,13 @@ export class Booking {
   @Column('float')
   dropoffLng: number;
 
-  @Column('float', {nullable: true})
+  @Column('float', { nullable: true })
   distanceKm: number;
 
-  @Column('int', {nullable: true})
+  @Column('float', { nullable: true })
   durationMins: number;
 
-  @Column('float', {nullable: true})
+  @Column({ nullable: true, type: 'float' })
   price: number;
 
   @Column({

@@ -13,20 +13,20 @@ export class VehiclesService {
     @InjectRepository(Vehicle)
     private readonly vehicleRepo: Repository<Vehicle>,
     @InjectRepository(Driver)
-    private readonly driverRepo: Repository<Driver>
-  ){}
+    private readonly driverRepo: Repository<Driver>,
+  ) {}
   async create(createVehicleDto: CreateVehicleDto) {
-    const {driverId} = createVehicleDto;
-    if(!driverId) throw new NotFoundException('Driver id must be provided');
+    const { driverId } = createVehicleDto;
+    if (!driverId) throw new NotFoundException('Driver id must be provided');
     const driver = await this.driverRepo.findOneBy({
-      id:driverId.toString()
+      id: driverId,
     });
-    if(!driver) throw new NotFoundException('Driver not found!');
+    if (!driver) throw new NotFoundException('Driver not found!');
 
     const preparedVehicle = this.vehicleRepo.create({
       ...createVehicleDto,
-      driver
-    })
+      driver,
+    });
 
     const vehicle = await this.vehicleRepo.save(preparedVehicle);
     return vehicle;
@@ -37,19 +37,19 @@ export class VehiclesService {
     return vehicle;
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const vehicle = await this.vehicleRepo.findOneBy({
-      id:id.toString()
+      id
     });
     return vehicle;
   }
 
-  async update(id: number, updateVehicleDto: UpdateVehicleDto) {
+  async update(id: string, updateVehicleDto: UpdateVehicleDto) {
     const vehicle = await this.vehicleRepo.update(id, updateVehicleDto);
     return vehicle;
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const vehicle = await this.vehicleRepo.delete(id);
     return vehicle;
   }

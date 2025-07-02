@@ -6,7 +6,7 @@ import { Driver } from './entities/driver.entity';
 import { User } from 'src/users/entities/user.entity';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Driver, User])],
+  imports: [TypeOrmModule.forFeature([Driver, User])],
   controllers: [DriversController],
   providers: [DriversService],
 })

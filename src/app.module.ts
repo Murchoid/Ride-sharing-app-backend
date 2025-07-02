@@ -11,6 +11,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { createKeyv } from '@keyv/redis';
 import { FakerModule } from './faker/faker.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { FakerModule } from './faker/faker.module';
     }),
     DatabaseModule,
     FakerModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

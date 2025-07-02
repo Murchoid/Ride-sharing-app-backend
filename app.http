@@ -8,20 +8,20 @@ POST {{url}}/users
 Content-Type: application/json
 
 {
-  "name": "Jane Doe",
-  "email": "jane.doe@example.com",
+  "name": "Michael Kamau",
+  "email": "mike.kam@example.com",
   "password": "securePassword123",
-  "role": "CUSTOMER"
+  "role": "DRIVER"
 }
 
 ### Get all users
 GET {{url}}/users
 
 ### Get a user by id
-GET {{url}}/users/:id
+GET {{url}}/users/dbf0f12e-6fc8-43d4-94e0-e5954e6ead06
 
 ### Update a user
-PUT {{url}}/users/:id
+PATCH {{url}}/users/:id
 Content-Type: application/json
 
 {
@@ -37,7 +37,7 @@ POST {{url}}/drivers
 Content-Type: application/json
 
 {
-  "userId": "REPLACE_WITH_USER_ID",
+  "userId": "dbf0f12e-6fc8-43d4-94e0-e5954e6ead06",
   "isAvailable": true,
   "baseLat": -1.2921,
   "baseLng": 36.8219
@@ -50,7 +50,7 @@ GET {{url}}/drivers
 GET {{url}}/drivers/:id
 
 ### Update a driver
-PUT {{url}}/drivers/:id
+PATCH {{url}}/drivers/:id
 Content-Type: application/json
 
 {
@@ -79,7 +79,7 @@ GET {{url}}/vehicles
 GET {{url}}/vehicles/:id
 
 ### Update a vehicle
-PUT {{url}}/vehicles/:id
+PATCH {{url}}/vehicles/:id
 Content-Type: application/json
 
 {
@@ -95,11 +95,11 @@ POST {{url}}/bookings
 Content-Type: application/json
 
 {
-  "customerId": "dbf0f12e-6fc8-43d4-94e0-e5954e6ead06",
+  "customerId": "8b911224-263c-4bfe-9044-d74e460b4639",
   "pickupAddress": "123 Main St",
   "dropoffAddress": "456 Elm St",
-  "pickupLat": -1.2921,
-  "pickupLng": 36.8219,
+  "pickupLat": 42.355492,
+  "pickupLng": -71.048611,
   "dropoffLat": -1.3000,
   "dropoffLng": 36.8000,
   "distanceKm":null ,
@@ -116,14 +116,41 @@ GET {{url}}/bookings
 ### Get a booking by id
 GET {{url}}/bookings/:id
 
-### Update a booking
-PUT {{url}}/bookings/:id
+### Update a booking locations
+PATCH {{url}}/bookings/f78e839b-b665-4713-8384-d15f8d6dc3fa/locations
 Content-Type: application/json
 
 {
-  "pickupAddress": "789 New St",
-  "dropoffAddress": "1010 New Ave",
-  "price": 600
+  "pickupLat": "49.41461",
+  "pickupLng": "8.681495",
+  "dropoffLat": "49.41943",
+  "dropoffLng": "8.686507"
+}
+
+
+### Update a booking payment method
+PATCH {{url}}/bookings/:id/payment-method
+Content-Type: application/json
+
+{
+  "paymentMethod": "MPESA",
+}
+
+
+### Update a booking status
+PATCH {{url}}/bookings/5ab9f7da-3e0e-471f-a212-b21c38b90160/status
+Content-Type: application/json
+
+{
+  "status": "COMPLETED"
+}
+
+### Update a booking pay ride
+PATCH {{url}}/bookings/:id/pay-ride
+Content-Type: application/json
+
+{
+  "paymentStatus": "PAID",
 }
 
 ### Delete a booking

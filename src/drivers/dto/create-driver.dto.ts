@@ -1,15 +1,15 @@
-import { IsBoolean, IsNumber, IsUUID } from "class-validator";
+import { IsBoolean, IsNumber, IsUUID } from 'class-validator';
 
 export class CreateDriverDto {
-    @IsUUID()
-    userId: string;
+  @IsUUID()
+  userId: string;
 
-    @IsBoolean()   
-    isAvailable: boolean;
-    
-    @IsNumber()
-    baseLat: number;
-    
-    @IsNumber()
-    baseLng: number;
+  @IsBoolean()
+  isAvailable: boolean;
+
+  @IsNumber()
+  baseLat: number;
+
+  @IsNumber()
+  baseLng: number;
 }

@@ -6,7 +6,7 @@ export class FakerController {
   constructor(private readonly fakerService: FakerService) {}
 
   @Post()
-   faker() {
+  faker() {
     return this.fakerService.seed();
   }
 }

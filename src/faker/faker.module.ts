@@ -8,7 +8,7 @@ import { Booking } from 'src/bookings/entities/booking.entity';
 import { Driver } from 'src/drivers/entities/driver.entity';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Vehicle, User, Booking, Driver])],
+  imports: [TypeOrmModule.forFeature([Vehicle, User, Booking, Driver])],
   controllers: [FakerController],
   providers: [FakerService],
 })

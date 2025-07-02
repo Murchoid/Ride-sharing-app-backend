@@ -15,22 +15,24 @@ export class DriversService {
     @InjectRepository(Driver)
     private readonly driverRepo: Repository<Driver>,
     @InjectRepository(User)
-    private readonly userRepo: Repository<User>
-  ){}
+    private readonly userRepo: Repository<User>,
+  ) {}
   async create(createDriverDto: CreateDriverDto) {
     //logic to check for user and save
     const { userId } = createDriverDto;
-    if(!userId) throw new NotFoundException('User id must be provided');
+    if (!userId) throw new NotFoundException('User id must be provided');
     const user = await this.userRepo.findOneBy({
-      id: userId.toString()
+      id: userId,
     });
-    if(!user) throw new NotFoundException('User not found!');
+    if (!user) throw new NotFoundException('User not found!');
     const preparedDriver = this.driverRepo.create({
       ...createDriverDto,
-      user
-    })
+      user,
+    });
 
     const driver = await this.driverRepo.save(createDriverDto);
+    user.role = "DRIVER";
+    await this.userRepo.update(user.id, user);
     return driver;
   }
 
@@ -39,20 +41,20 @@ export class DriversService {
     return driver;
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const driver = await this.driverRepo.findOneBy({
-      id: id.toString()
+      id
     });
 
     return driver;
   }
 
-  async update(id: number, updateDriverDto: UpdateDriverDto) {
+  async update(id: string, updateDriverDto: UpdateDriverDto) {
     const driver = await this.driverRepo.update(id, updateDriverDto);
     return driver;
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const driver = await this.driverRepo.delete(id);
     return driver;
   }
