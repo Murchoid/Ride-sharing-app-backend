@@ -42,8 +42,8 @@ export class DriversService {
   }
 
   async findOne(id: string) {
-    const driver = await this.driverRepo.findOneBy({
-      id
+    const driver = await this.driverRepo.findOne({
+      where:{id, isActive: true}
     });
 
     return driver;
@@ -55,7 +55,15 @@ export class DriversService {
   }
 
   async remove(id: string) {
-    const driver = await this.driverRepo.delete(id);
-    return driver;
+    const driver = await this.driverRepo.findOneBy({id});
+    if(driver){
+      driver.isActive = false;
+      driver.isAvailable = false;
+      await this.driverRepo.save(driver);
+
+      return driver.id
+    }
+
+    throw new NotFoundException('Driver not foind!');
   }
 }

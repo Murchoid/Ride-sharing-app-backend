@@ -38,8 +38,8 @@ export class VehiclesService {
   }
 
   async findOne(id: string) {
-    const vehicle = await this.vehicleRepo.findOneBy({
-      id
+    const vehicle = await this.vehicleRepo.findOne({
+      where:{id, isRetired: false}
     });
     return vehicle;
   }
@@ -50,7 +50,13 @@ export class VehiclesService {
   }
 
   async remove(id: string) {
-    const vehicle = await this.vehicleRepo.delete(id);
-    return vehicle;
+    const vehicle = await this.vehicleRepo.findOneBy({id});
+    if(vehicle){
+      vehicle.isRetired= true;
+      await this.vehicleRepo.save(vehicle);
+
+      return vehicle.id;
+    }
+    throw new NotFoundException('Vehicle not found');
   }
 }

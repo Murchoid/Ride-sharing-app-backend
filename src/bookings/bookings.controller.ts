@@ -68,8 +68,4 @@ export class BookingsController {
     return this.bookingsService.updateBookingPaymentStatus(id, body.paymentStatus);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.bookingsService.remove(id);
-  }
 }

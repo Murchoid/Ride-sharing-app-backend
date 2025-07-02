@@ -39,6 +39,9 @@ export class User {
   @OneToMany(() => Booking, (booking) => booking.customer)
   bookings: Booking[];
 
+  @Column({default: true})
+  isActive: boolean;
+
   @Column({ nullable: true })
   accessToken: string;
 

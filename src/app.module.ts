@@ -12,6 +12,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { createKeyv } from '@keyv/redis';
 import { FakerModule } from './faker/faker.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { AuthsModule } from './auths/auths.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     DatabaseModule,
     FakerModule,
     AnalyticsModule,
+    AuthsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

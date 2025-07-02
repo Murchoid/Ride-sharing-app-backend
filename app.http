@@ -30,7 +30,7 @@ Content-Type: application/json
 }
 
 ### Delete a user
-DELETE {{url}}/users/:id
+DELETE {{url}}/users/dbf0f12e-6fc8-43d4-94e0-e5954e6ead06
 
 ### Create a driver
 POST {{url}}/drivers
@@ -60,8 +60,7 @@ Content-Type: application/json
 }
 
 ### Delete a driver
-DELETE {{url}}/drivers/:id
-
+DELETE {{url}}/drivers/751c415f-8648-419e-a38a-c7891afcb922
 ### Create a vehicle
 POST {{url}}/vehicles
 Content-Type: application/json
@@ -155,3 +154,4 @@ Content-Type: application/json
 
 ### Delete a booking
 DELETE {{url}}/bookings/:id
+

@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
 } from '@nestjs/common';
 import { AnalyticsService } from './analytics.service';
 import { CreateAnalyticsDto } from './dto/create-analytics.dto';
@@ -15,31 +16,15 @@ import { UpdateAnalyticsDto } from './dto/update-analytics.dto';
 export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
-  @Post()
-  create(@Body() createAnalyticsDto: CreateAnalyticsDto) {
-    return this.analyticsService.create(createAnalyticsDto);
+  @Get('/me')
+  getOwnAnalytics(@Req() req){
+    const user = req.user;
+    if(user.role == 'CUSTOMER') return this.analyticsService.getCustomerAnalytics(user.id);
+    if(user.role == 'DRIVER') return this.analyticsService.getDriverAnalytics(user.id);
   }
 
-  @Get()
-  findAll() {
-    return this.analyticsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.analyticsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateAnalyticsDto: UpdateAnalyticsDto,
-  ) {
-    return this.analyticsService.update(+id, updateAnalyticsDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.analyticsService.remove(+id);
+  @Get('admin')
+  getAdminAnalytics(){
+    return this.analyticsService.getAdminAnalytics()
   }
 }

@@ -17,7 +17,9 @@ export class Driver {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToOne(() => User)
+  @OneToOne(() => User,{
+     cascade:['soft-remove']
+  })
   @JoinColumn()
   user: User;
 
@@ -33,6 +35,9 @@ export class Driver {
   @OneToOne(() => Vehicle, (vehicle) => vehicle.driver)
   vehicle: Vehicle;
 
+  @Column({default: true})
+  isActive: boolean;
+  
   @OneToMany(() => Booking, (booking) => booking.driver)
   bookings: Booking[];
 

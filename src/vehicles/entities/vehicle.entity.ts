@@ -20,10 +20,15 @@ export class Vehicle {
   @Column({ unique: true })
   plate: string;
 
-  @OneToOne(() => Driver, (driver) => driver.vehicle)
+  @OneToOne(() => Driver, (driver) => driver.vehicle, {
+     cascade:['soft-remove']
+  })
   @JoinColumn()
   driver: Driver;
 
+  @Column({default: false})
+  isRetired: boolean;
+  
   @CreateDateColumn()
   createdAt: Date;
 
