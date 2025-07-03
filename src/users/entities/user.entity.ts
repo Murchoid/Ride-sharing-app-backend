@@ -43,8 +43,8 @@ export class User {
   isActive: boolean;
 
   @Column({ nullable: true })
-  accessToken: string;
+  accessToken?: string;
 
   @Column({ nullable: true })
-  refreshToken: string;
+  refreshToken?: string;
 }

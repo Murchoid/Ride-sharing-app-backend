@@ -1,34 +1,35 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, UnauthorizedException } from '@nestjs/common';
 import { AuthsService } from './auths.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import { Public } from './decorators/public.decorator';
+import { RequestWithUser } from 'common/types/request.interface';
+
 
 @Controller('auths')
 export class AuthsController {
   constructor(private readonly authsService: AuthsService) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authsService.create(createAuthDto);
+  @Public()
+  @Post('/signin')
+   signIn(@Body() createAuthDto: CreateAuthDto) {
+    return  this.authsService.signIn(createAuthDto);
   }
 
-  @Get()
-  findAll() {
-    return this.authsService.findAll();
+  @Public()
+   @Post('/signout/:id')
+  signOut(@Param('id') id:string) {
+    return this.authsService.signOut(id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authsService.findOne(+id);
-  }
+  
+  @Post('/refresh-token')
+  refreshtoken(@Query() id:string, @Req() req:RequestWithUser){
+    const user = req.user;
+    if(user.sub != id){
+      throw new UnauthorizedException('Invalid credentials')
+    }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authsService.update(+id, updateAuthDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authsService.remove(+id);
+    return this.authsService.refreshTokens(id, user.refreshToken)
   }
 }

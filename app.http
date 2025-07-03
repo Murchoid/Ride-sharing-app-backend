@@ -9,7 +9,7 @@ Content-Type: application/json
 
 {
   "name": "Michael Kamau",
-  "email": "mike.kam@example.com",
+  "email": "mike.kamau@example.com",
   "password": "securePassword123",
   "role": "DRIVER"
 }
@@ -152,6 +152,32 @@ Content-Type: application/json
   "paymentStatus": "PAID",
 }
 
-### Delete a booking
-DELETE {{url}}/bookings/:id
+
+### AUTH ENDPOINTS
+
+### Sign in
+POST {{url}}/auths/signin
+Content-Type: application/json
+
+{
+  "email": "mike.kam@example.com",
+  "password": "securePassword123"
+}
+
+### Sign out (replace :id with user id)
+POST {{url}}/auths/signout/:id
+
+### Refresh token (replace :id with user id, and use Bearer <refresh_token> in Authorization header)
+POST {{url}}/auths/refresh-token?id=:id
+Authorization: Bearer <refresh_token>
+
+### ANALYTICS ENDPOINTS
+
+### Get analytics for current user (requires Authorization: Bearer <access_token>)
+GET {{url}}/analytics/me
+Authorization: Bearer <access_token>
+
+### Get admin analytics (requires Authorization: Bearer <access_token> for admin)
+GET {{url}}/analytics/admin
+Authorization: Bearer <access_token>
 

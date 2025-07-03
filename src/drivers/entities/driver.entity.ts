@@ -17,9 +17,7 @@ export class Driver {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToOne(() => User,{
-     cascade:['soft-remove']
-  })
+  @OneToOne(() => User)
   @JoinColumn()
   user: User;
 
