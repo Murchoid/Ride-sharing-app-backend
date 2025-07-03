@@ -4,10 +4,8 @@ import { CreateDriverDto } from './dto/create-driver.dto';
 import { UpdateDriverDto } from './dto/update-driver.dto';
 import { Driver } from './entities/driver.entity';
 import { Repository } from 'typeorm';
-import { DriversModule } from './drivers.module';
 import { NotFoundException } from '@nestjs/common';
 import { User } from 'src/users/entities/user.entity';
-import { UsersModule } from 'src/users/users.module';
 
 @Injectable()
 export class DriversService {
@@ -30,8 +28,8 @@ export class DriversService {
       user,
     });
 
-    const driver = await this.driverRepo.save(createDriverDto);
-    user.role = "DRIVER";
+    const driver = await this.driverRepo.save(preparedDriver);
+    user.role = 'DRIVER';
     await this.userRepo.update(user.id, user);
     return driver;
   }
@@ -43,7 +41,7 @@ export class DriversService {
 
   async findOne(id: string) {
     const driver = await this.driverRepo.findOne({
-      where:{id, isActive: true}
+      where: { id, isActive: true },
     });
 
     return driver;
@@ -55,13 +53,13 @@ export class DriversService {
   }
 
   async remove(id: string) {
-    const driver = await this.driverRepo.findOneBy({id});
-    if(driver){
+    const driver = await this.driverRepo.findOneBy({ id });
+    if (driver) {
       driver.isActive = false;
       driver.isAvailable = false;
       await this.driverRepo.save(driver);
 
-      return driver.id
+      return driver.id;
     }
 
     throw new NotFoundException('Driver not foind!');

@@ -15,41 +15,48 @@ export class AnalyticsService {
     @InjectRepository(Driver)
     private driverRepo: Repository<Driver>,
     @InjectRepository(Booking)
-    private bookingRepo: Repository<Booking>
-  ){}
-  async getCustomerAnalytics(id: string){
-      const bookings = await this.bookingRepo.find({
-        where: { customer: { id } },
-        relations: ['customer'],
-      });
-
-      if(!bookings) throw new NotFoundException('No info found on this user');
-      const totalMoneySpent = bookings.reduce((sum, b) => sum + (b.paymentStatus == 'PAID' ? b.price : 0), 0);
-
-      return{
-        totalExpenditure: totalMoneySpent,
-        totalRides: bookings.length
-      }
-  }
-
-  async getDriverAnalytics(id: string){
+    private bookingRepo: Repository<Booking>,
+  ) {}
+  async getCustomerAnalytics(id: string) {
     const bookings = await this.bookingRepo.find({
-      where:{driver: { id }, status: 'COMPLETED'}
+      where: { customer: { id } },
+      relations: ['customer'],
     });
 
-    if(!bookings) throw new NotFoundException('No info found on this driver');
-    const totalEarnings = bookings.reduce((sum, b) => (b.paymentStatus == 'PAID' ? b.price : 0) , 0);
-    const averageDistance = bookings.length ? bookings.reduce((sum, b)=> sum + b.distanceKm, 0)/bookings.length
-          : 0;
-    
-    return{
-      totalEarnings,
-      totalRids: bookings.length,
-      averageDistance
+    if (!bookings) throw new NotFoundException('No info found on this user');
+    const totalMoneySpent = bookings.reduce(
+      (sum, b) => sum + (b.paymentStatus == 'PAID' ? b.price : 0),
+      0,
+    );
+
+    return {
+      totalExpenditure: totalMoneySpent,
+      totalRides: bookings.length,
     };
   }
 
-  async getAdminAnalytics(){
+  async getDriverAnalytics(id: string) {
+    const bookings = await this.bookingRepo.find({
+      where: { driver: { id }, status: 'COMPLETED' },
+    });
+
+    if (!bookings) throw new NotFoundException('No info found on this driver');
+    const totalEarnings = bookings.reduce(
+      (sum, b) => (b.paymentStatus == 'PAID' ? b.price : 0),
+      0,
+    );
+    const averageDistance = bookings.length
+      ? bookings.reduce((sum, b) => sum + b.distanceKm, 0) / bookings.length
+      : 0;
+
+    return {
+      totalEarnings,
+      totalRids: bookings.length,
+      averageDistance,
+    };
+  }
+
+  async getAdminAnalytics() {
     const [totalUsers, totalDrivers, totalBookings] = await Promise.all([
       this.userRepo.count(),
       this.driverRepo.count(),

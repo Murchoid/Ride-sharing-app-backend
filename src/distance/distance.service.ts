@@ -17,8 +17,8 @@ export class DistanceService {
     );
     const body = JSON.stringify({
       coordinates: [
-        [pickupLng,pickupLat],
-        [dropoffLng,dropoffLat]
+        [pickupLng, pickupLat],
+        [dropoffLng, dropoffLat],
       ],
     });
 
@@ -70,7 +70,6 @@ export class DistanceService {
       dropoffLat,
       dropoffLng,
     );
-
 
     const durationAtoB = response.features[0].properties.summary.duration / 60;
     const distance = response.features[0].properties.summary.distance;

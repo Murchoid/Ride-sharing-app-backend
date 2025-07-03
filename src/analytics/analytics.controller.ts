@@ -11,20 +11,26 @@ import {
 import { AnalyticsService } from './analytics.service';
 import { CreateAnalyticsDto } from './dto/create-analytics.dto';
 import { UpdateAnalyticsDto } from './dto/update-analytics.dto';
+import { ROLES } from 'src/auths/decorators/roles.decorator';
+import { eROLE } from 'common/types/roles.types';
 
 @Controller('analytics')
 export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
+  @ROLES(eROLE.CUSTOMER, eROLE.DRIVER)
   @Get('/me')
-  getOwnAnalytics(@Req() req){
+  getOwnAnalytics(@Req() req) {
     const user = req.user;
-    if(user.role == 'CUSTOMER') return this.analyticsService.getCustomerAnalytics(user.id);
-    if(user.role == 'DRIVER') return this.analyticsService.getDriverAnalytics(user.id);
+    if (user.role == 'CUSTOMER')
+      return this.analyticsService.getCustomerAnalytics(user.id);
+    if (user.role == 'DRIVER')
+      return this.analyticsService.getDriverAnalytics(user.id);
   }
 
+  @ROLES(eROLE.ADMIN)
   @Get('admin')
-  getAdminAnalytics(){
-    return this.analyticsService.getAdminAnalytics()
+  getAdminAnalytics() {
+    return this.analyticsService.getAdminAnalytics();
   }
 }

@@ -33,9 +33,9 @@ export class Driver {
   @OneToOne(() => Vehicle, (vehicle) => vehicle.driver)
   vehicle: Vehicle;
 
-  @Column({default: true})
+  @Column({ default: true })
   isActive: boolean;
-  
+
   @OneToMany(() => Booking, (booking) => booking.driver)
   bookings: Booking[];
 

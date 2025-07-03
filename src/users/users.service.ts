@@ -14,7 +14,7 @@ export class UsersService {
   ) {}
   async create(createUserDto: CreateUserDto) {
     let { password } = createUserDto;
-    const salt = await bcrypt.genSalt(20);
+    const salt = await bcrypt.genSalt(10);
     password = await bcrypt.hash(password, salt);
     const preparedUser = this.userRepo.create({
       ...createUserDto,
@@ -34,7 +34,7 @@ export class UsersService {
     const user = await this.userRepo.findOneBy({
       id,
     });
-    if(!user?.isActive){
+    if (!user?.isActive) {
       throw new NotFoundException('User not found');
     }
     return user;
@@ -46,9 +46,9 @@ export class UsersService {
   }
 
   async remove(id: string) {
-    const user = await this.userRepo.findOneBy({id});
-    if(user){
-      user.isActive=false;
+    const user = await this.userRepo.findOneBy({ id });
+    if (user) {
+      user.isActive = false;
       await this.userRepo.save(user);
       return user.id;
     }

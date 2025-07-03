@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Req,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Req } from '@nestjs/common';
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import {
@@ -43,12 +34,12 @@ export class BookingsController {
     return this.bookingsService.findOne(id);
   }
 
-   @ROLES(eROLE.CUSTOMER)
-    @Get('/me')
-    findOwn(@Req() req: RequestWithUser) {
-      const {sub} = req.user;
-      return this.bookingsService.findOne(sub);
-    }
+  @ROLES(eROLE.CUSTOMER)
+  @Get('/me')
+  findOwn(@Req() req: RequestWithUser) {
+    const { sub } = req.user;
+    return this.bookingsService.findOne(sub);
+  }
 
   @ROLES(eROLE.DRIVER, eROLE.ADMIN)
   @Patch(':id/status')
@@ -65,7 +56,10 @@ export class BookingsController {
     @Param('id') id: string,
     @Body() body: UpdateBookingPaymentMethodDto,
   ) {
-    return this.bookingsService.updateBookingPaymentMethod(id, body.paymentMethod);
+    return this.bookingsService.updateBookingPaymentMethod(
+      id,
+      body.paymentMethod,
+    );
   }
 
   @ROLES(eROLE.CUSTOMER)
@@ -83,7 +77,9 @@ export class BookingsController {
     @Param('id') id: string,
     @Body() body: UpdateBookingPaymentStatusDto,
   ) {
-    return this.bookingsService.updateBookingPaymentStatus(id, body.paymentStatus);
+    return this.bookingsService.updateBookingPaymentStatus(
+      id,
+      body.paymentStatus,
+    );
   }
-
 }

@@ -1,4 +1,6 @@
 @url=http://localhost:3000
+@auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiY2QxYWFkOS1lYmM3LTQyODAtYmRkOS1jNjNiYjNlOTdlZmYiLCJlbWFpbCI6Im11cmNob2lkQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiaXNBY3RpdmUiOnRydWUsImlhdCI6MTc1MTU0NjU2NSwiZXhwIjoxNzUxNTUwMTY1fQ.cq4aqoAh8ykAs52QkfsHiB-ic4AzZAGeyYrCMmO_n2g
+@id=bcd1aad9-ebc7-4280-bdd9-c63bb3e97eff
 
 ### Seed fake data (clears and seeds all tables)
 POST {{url}}/faker
@@ -9,13 +11,14 @@ Content-Type: application/json
 
 {
   "name": "Michael Kamau",
-  "email": "mike.kamau@example.com",
+  "email": "murchoid@example.com",
   "password": "securePassword123",
-  "role": "DRIVER"
+  "role": "ADMIN"
 }
 
 ### Get all users
 GET {{url}}/users
+Authorization: Bearer {{auth}}
 
 ### Get a user by id
 GET {{url}}/users/dbf0f12e-6fc8-43d4-94e0-e5954e6ead06
@@ -111,6 +114,7 @@ Content-Type: application/json
 
 ### Get all bookings
 GET {{url}}/bookings
+Authorization: Bearer {{auth}}
 
 ### Get a booking by id
 GET {{url}}/bookings/:id
@@ -160,7 +164,7 @@ POST {{url}}/auths/signin
 Content-Type: application/json
 
 {
-  "email": "mike.kam@example.com",
+  "email": "murchoid@example.com",
   "password": "securePassword123"
 }
 
@@ -175,9 +179,9 @@ Authorization: Bearer <refresh_token>
 
 ### Get analytics for current user (requires Authorization: Bearer <access_token>)
 GET {{url}}/analytics/me
-Authorization: Bearer <access_token>
+Authorization: Bearer {{auth}}
 
 ### Get admin analytics (requires Authorization: Bearer <access_token> for admin)
 GET {{url}}/analytics/admin
-Authorization: Bearer <access_token>
+Authorization: Bearer {{auth}}
 

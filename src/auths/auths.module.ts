@@ -8,15 +8,18 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AtStrategy } from './strategies/at.strategy';
 import { RfStrategy } from './strategies/rt.strategy';
+import { DatabaseModule } from 'src/database/database.module';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([User]),
-  JwtModule.register({
-    global: true
-  }),
-  PassportModule
-],
+  imports: [
+    DatabaseModule,
+    TypeOrmModule.forFeature([User]),
+    JwtModule.register({
+      global: true,
+    }),
+    PassportModule,
+  ],
   controllers: [AuthsController],
-  providers: [AuthsService, ConfigService, AtStrategy, RfStrategy],
+  providers: [AuthsService, AtStrategy, RfStrategy],
 })
 export class AuthsModule {}

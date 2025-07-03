@@ -39,11 +39,11 @@ export class UsersController {
   }
 
   @ROLES(eROLE.CUSTOMER)
-    @Get('/me')
-    findOwn(@Req() req: RequestWithUser) {
-      const {sub} = req.user;
-      return this.usersService.findOne(sub);
-    }
+  @Get('/me')
+  findOwn(@Req() req: RequestWithUser) {
+    const { sub } = req.user;
+    return this.usersService.findOne(sub);
+  }
 
   @ROLES(eROLE.CUSTOMER)
   @Patch(':id')

@@ -28,17 +28,19 @@ import { RolesGuard } from './auths/guards/roles.guards';
       inject: [ConfigService],
       isGlobal: true,
       useFactory: (configService: ConfigService) => ({
-          ttl: configService.getOrThrow<number>('T_TTL'),
-          stores: [createKeyv(configService.getOrThrow<string>('REDIS_URL'))],
+        ttl: configService.getOrThrow<number>('T_TTL'),
+        stores: [createKeyv(configService.getOrThrow<string>('REDIS_URL'))],
       }),
     }),
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => [{
+      useFactory: (configService: ConfigService) => [
+        {
           ttl: configService.getOrThrow<number>('T_TTL'),
           limit: configService.getOrThrow<number>('T_LIMIT'),
-      }],
+        },
+      ],
     }),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -49,7 +51,7 @@ import { RolesGuard } from './auths/guards/roles.guards';
     AuthsModule,
   ],
   providers: [
-    {provide: APP_INTERCEPTOR, useClass: CacheInterceptor},
+    { provide: APP_INTERCEPTOR, useClass: CacheInterceptor },
     {
       provide: APP_GUARD,
       useClass: AtGuard,

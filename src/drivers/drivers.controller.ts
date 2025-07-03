@@ -40,7 +40,7 @@ export class DriversController {
   @ROLES(eROLE.DRIVER)
   @Get('/me')
   findOwn(@Req() req: RequestWithUser) {
-    const {sub} = req.user;
+    const { sub } = req.user;
     return this.driversService.findOne(sub);
   }
 

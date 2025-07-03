@@ -21,10 +21,8 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
   private readonly logs = new LogsService();
 
   private getClientIp(request: Request): string {
-    
     const forwardedFor = request.headers['x-forwarded-for'];
     if (forwardedFor) {
-      
       return Array.isArray(forwardedFor)
         ? forwardedFor[0]
         : forwardedFor.split(',')[0].trim();

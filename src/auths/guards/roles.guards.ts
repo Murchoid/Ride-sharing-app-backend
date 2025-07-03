@@ -10,18 +10,15 @@ interface IUserRequest extends Request {
   user?: JWTPayload;
 }
 
-enum eROLE{
-    CUSTOMER='CUSTOMER',
-    DRIVER= 'DRIVER',
-    ADMIN='ADMIN'
+enum eROLE {
+  CUSTOMER = 'CUSTOMER',
+  DRIVER = 'DRIVER',
+  ADMIN = 'ADMIN',
 }
-
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(
-    private reflector: Reflector,
-  ) {}
+  constructor(private reflector: Reflector) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const requestedRoles = this.reflector.getAllAndOverride<eROLE[]>(
@@ -40,7 +37,6 @@ export class RolesGuard implements CanActivate {
       return false;
     }
 
-  
     return requestedRoles.some((role) => user.role === role);
   }
 }

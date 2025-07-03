@@ -17,7 +17,7 @@ export class Booking {
   @ManyToOne(() => User, (user) => user.bookings)
   customer: User;
 
-  @ManyToOne(() => Driver, (driver) => driver.bookings, { nullable: true})
+  @ManyToOne(() => Driver, (driver) => driver.bookings, { nullable: true })
   driver: Driver;
 
   @Column()

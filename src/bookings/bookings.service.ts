@@ -42,7 +42,7 @@ export class BookingsService {
 
     const drivers = await this.driverRepo.findBy({
       isAvailable: true,
-      isActive: true
+      isActive: true,
     });
     if (!drivers) return 'No driver is available now try again later';
     const user = await this.userRepo.findBy({
@@ -187,7 +187,7 @@ export class BookingsService {
 
       const drivers = await this.driverRepo.findBy({
         isAvailable: true,
-        isActive: true
+        isActive: true,
       });
       if (!drivers) return 'No driver is available now, try again later';
 
@@ -213,5 +213,4 @@ export class BookingsService {
 
     return await this.bookingRepo.save(booking);
   }
-
 }
