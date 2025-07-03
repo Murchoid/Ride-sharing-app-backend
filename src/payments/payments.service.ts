@@ -42,16 +42,12 @@ export class PaymentsService {
 
   }
 
-  findAll() {
-    return `This action returns all payments`;
+  async findAll() {
+    return await this.paymentRepo.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} payment`;
-  }
-
-  update(id: number, updatePaymentDto: UpdatePaymentDto) {
-    return `This action updates a #${id} payment`;
+  async findOne(id: string) {
+    return await this.paymentRepo.findOneBy({id});
   }
 
 }

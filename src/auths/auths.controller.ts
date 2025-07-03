@@ -1,18 +1,14 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   Req,
   Query,
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthsService } from './auths.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 import { Public } from './decorators/public.decorator';
 import { RequestWithUser } from 'src/common/types/request.interface';
 
@@ -32,6 +28,7 @@ export class AuthsController {
     return this.authsService.signOut(id);
   }
 
+  @Public()
   @Post('/refresh-token')
   refreshtoken(@Query() id: string, @Req() req: RequestWithUser) {
     const user = req.user;

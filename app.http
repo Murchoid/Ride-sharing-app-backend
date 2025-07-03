@@ -1,5 +1,5 @@
 @url=http://localhost:3000
-@auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0OTZlMzQwYi1jYWJlLTQ3NjItOTcxYy00ZjM2YmFkNmUzN2QiLCJlbWFpbCI6Im11cmNob2lkQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiaXNBY3RpdmUiOnRydWUsImlhdCI6MTc1MTU3MTc1MCwiZXhwIjoxNzUxNTc1MzUwfQ.PXCgzvSs9nlb9GyPFlIrcLutf6tI_Ek0MRs3rcZtXYA
+@auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0OTZlMzQwYi1jYWJlLTQ3NjItOTcxYy00ZjM2YmFkNmUzN2QiLCJlbWFpbCI6Im11cmNob2lkQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiaXNBY3RpdmUiOnRydWUsImlhdCI6MTc1MTU3NTkwNSwiZXhwIjoxNzUxNTc5NTA1fQ.C9V5ade0--cY6PMey5xGTAiI04FuP421kF8xb-RjslQ
 @id=bcd1aad9-ebc7-4280-bdd9-c63bb3e97eff
 
 ### Seed fake data (clears and seeds all tables)
@@ -49,6 +49,7 @@ Authorization:  Bearer {{auth}}
 
 ### Get all drivers
 GET {{url}}/drivers
+Authorization: Bearer {{auth}}
 
 ### Get a driver by id
 GET {{url}}/drivers/:id
@@ -104,8 +105,8 @@ Authorization: Bearer {{auth}}
   "dropoffAddress": "456 Elm St",
   "pickupLat": 8.681495,
   "pickupLng": 49.41461,
-  "dropoffLat": -1.3000,
-  "dropoffLng": 36.8000,
+  "dropoffLat": 49.41943,
+  "dropoffLng": 8.686507,
   "distanceKm": null,
   "durationMins": null,
   "price": null,
@@ -143,8 +144,9 @@ Content-Type: application/json
 
 
 ### Update a booking status
-PATCH {{url}}/bookings/5ab9f7da-3e0e-471f-a212-b21c38b90160/status
+PATCH {{url}}/bookings/2c035293-0fe2-404d-84fb-12b285936a38/status
 Content-Type: application/json
+Authorization: Bearer {{auth}}
 
 {
   "status": "COMPLETED"
@@ -175,7 +177,7 @@ POST {{url}}/auths/signout/:id
 
 ### Refresh token (replace :id with user id, and use Bearer <refresh_token> in Authorization header)
 POST {{url}}/auths/refresh-token?id=:id
-Authorization: Bearer <refresh_token>
+Authorization: Bearer {{auth}}
 
 ### ANALYTICS ENDPOINTS
 

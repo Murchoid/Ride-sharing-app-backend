@@ -44,8 +44,8 @@ export class BookingsService {
       isAvailable: true,
       isActive: true,
     });
-    console.log(drivers);
     if (drivers.length == 0) throw new NotFoundException('No driver is available now try again later');
+    
     const user = await this.userRepo.findBy({
       id: In([customerId]),
     });
@@ -111,13 +111,13 @@ export class BookingsService {
     if (status == 'COMPLETED' || status == 'CANCELLED') {
       if (status == 'COMPLETED') {
         //logic to obvio change driver's base loc after dropping baddie
-        booking.driver.baseLat = booking.dropoffLat;
-        booking.driver.baseLng = booking.dropoffLng;
-        booking.driver.isAvailable = true;
+        const baseLat = booking.dropoffLat;
+        const baseLng = booking.dropoffLng;
+        const isAvailable = true;
         if(booking.paymentMethod == 'CASH'){
           booking.paymentStatus='PAID';
         }
-        await this.driverRepo.update(booking.driver.id, booking.driver);
+        await this.driverRepo.update(booking.driver.id, {baseLat, baseLng, isAvailable});
       } else {
         booking.driver.isAvailable = true;
         await this.driverRepo.update(booking.driver.id, booking.driver);
