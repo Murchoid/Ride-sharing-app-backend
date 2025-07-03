@@ -19,7 +19,8 @@ export async function triggerStkPush(
   amount: number,
   accessToken: string,
   shortcode: number,
-  passkey: string
+  passkey: string,
+  callbackUrl: string
 ): Promise<any> {
   const timestamp = moment().format('YYYYMMDDHHmmss');
   const password = Buffer.from(
@@ -37,7 +38,7 @@ export async function triggerStkPush(
     PartyA: phoneNumber,
     PartyB: shortcode,
     PhoneNumber: phoneNumber,
-    CallBackURL: process.env.MPESA_CALLBACK_URL,
+    CallBackURL: callbackUrl,
     AccountReference: 'RideShareApp',
     TransactionDesc: 'Payment for Ride',
   };

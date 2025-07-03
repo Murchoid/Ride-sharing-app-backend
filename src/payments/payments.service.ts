@@ -31,9 +31,10 @@ export class PaymentsService {
     const consumerSecret = this.configService.get('CONSUMER_SECRET');
     const shortcode = this.configService.get('SHORTCODE');
     const passkey = this.configService.get('PASSKEY');
+    const callbackUrl = this.configService.get('MPESA_CALLBACK_URL');
 
     const token = await getAccessToken(consumerKey, consumerSecret);
-    const response = await triggerStkPush(phoneNumber, amount, token, shortcode, passkey);
+    const response = await triggerStkPush(phoneNumber, amount, token, shortcode, passkey,callbackUrl);
 
 
     const status = 'PAID';
