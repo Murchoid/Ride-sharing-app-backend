@@ -21,3 +21,19 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
     };
   }
 }
+
+@Injectable()
+export class TypeOrmConfigServiceForNeon implements TypeOrmOptionsFactory {
+constructor(private configService: ConfigService){}
+  createTypeOrmOptions(): TypeOrmModuleOptions {
+    return {
+            type: 'postgres',
+          url: this.configService.getOrThrow<string>('POSTGRE_ONLINE'),
+          ssl: {
+            rejectUnauthorized: false,
+          },
+          autoLoadEntities: true,
+          synchronize: true,
+    };
+  }
+}
