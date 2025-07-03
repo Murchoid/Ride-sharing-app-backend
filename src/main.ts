@@ -1,6 +1,6 @@
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ResponseInterceptor } from 'common/interceptors/response.interceptor';
+import { ResponseInterceptor } from 'src/common/interceptors/response.interceptor';
 import { AllExceptionsFilter } from './http.exception.filters';
 
 async function bootstrap() {

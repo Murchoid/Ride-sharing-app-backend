@@ -12,7 +12,7 @@ import { AnalyticsService } from './analytics.service';
 import { CreateAnalyticsDto } from './dto/create-analytics.dto';
 import { UpdateAnalyticsDto } from './dto/update-analytics.dto';
 import { ROLES } from 'src/auths/decorators/roles.decorator';
-import { eROLE } from 'common/types/roles.types';
+import { eROLE } from 'src/common/types/roles.types';
 
 @Controller('analytics')
 export class AnalyticsController {

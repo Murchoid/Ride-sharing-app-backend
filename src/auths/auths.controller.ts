@@ -14,7 +14,7 @@ import { AuthsService } from './auths.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { Public } from './decorators/public.decorator';
-import { RequestWithUser } from 'common/types/request.interface';
+import { RequestWithUser } from 'src/common/types/request.interface';
 
 @Controller('auths')
 export class AuthsController {

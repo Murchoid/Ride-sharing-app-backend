@@ -13,8 +13,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Public } from 'src/auths/decorators/public.decorator';
 import { ROLES } from 'src/auths/decorators/roles.decorator';
-import { eROLE } from 'common/types/roles.types';
-import { RequestWithUser } from 'common/types/request.interface';
+import { eROLE } from 'src/common/types/roles.types';
+import { RequestWithUser } from 'src/common/types/request.interface';
 
 @Controller('users')
 export class UsersController {

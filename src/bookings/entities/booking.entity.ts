@@ -1,10 +1,12 @@
 import { Driver } from 'src/drivers/entities/driver.entity';
+import { Payment } from 'src/payments/entities/payment.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -57,8 +59,11 @@ export class Booking {
   @Column({ type: 'enum', enum: ['PENDING', 'PAID'], default: 'PENDING' })
   paymentStatus: string;
 
-  @Column({ type: 'enum', enum: ['CASH', 'MPESA', 'CARD'], default: 'CASH' })
+  @Column({ type: 'enum', enum: ['CASH', 'MPESA'], default: 'CASH' })
   paymentMethod: string;
+
+   @OneToOne(() => Payment, payment => payment.booking, { nullable: true })
+  payment: Payment;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -113,6 +113,9 @@ export class BookingsService {
         booking.driver.baseLat = booking.dropoffLat;
         booking.driver.baseLng = booking.dropoffLng;
         booking.driver.isAvailable = true;
+        if(booking.paymentMethod == 'CASH'){
+          booking.paymentStatus='PAID';
+        }
         await this.driverRepo.update(booking.driver.id, booking.driver);
       } else {
         booking.driver.isAvailable = true;
@@ -136,6 +139,8 @@ export class BookingsService {
 
     if (!booking) throw new NotFoundException('Booking not found!');
 
+    //Only update payment status if its pending
+    if(booking.paymentStatus == 'PENDING')
     booking.paymentStatus = paymentSatus;
 
     return await this.bookingRepo.save(booking);

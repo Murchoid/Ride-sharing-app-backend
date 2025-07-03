@@ -11,7 +11,7 @@ import { VehiclesService } from './vehicles.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { ROLES } from 'src/auths/decorators/roles.decorator';
-import { eROLE } from 'common/types/roles.types';
+import { eROLE } from 'src/common/types/roles.types';
 
 @Controller('vehicles')
 export class VehiclesController {

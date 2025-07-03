@@ -9,8 +9,8 @@ import {
   UpdateBookingStatusDto,
 } from './dto/update-booking.dto';
 import { ROLES } from 'src/auths/decorators/roles.decorator';
-import { eROLE } from 'common/types/roles.types';
-import { RequestWithUser } from 'common/types/request.interface';
+import { eROLE } from 'src/common/types/roles.types';
+import { RequestWithUser } from 'src/common/types/request.interface';
 
 @Controller('bookings')
 export class BookingsController {

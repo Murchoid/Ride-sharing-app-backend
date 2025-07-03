@@ -11,9 +11,9 @@ import {
 import { DriversService } from './drivers.service';
 import { CreateDriverDto } from './dto/create-driver.dto';
 import { UpdateDriverDto } from './dto/update-driver.dto';
-import { eROLE } from 'common/types/roles.types';
+import { eROLE } from 'src/common/types/roles.types';
 import { ROLES } from 'src/auths/decorators/roles.decorator';
-import { RequestWithUser } from 'common/types/request.interface';
+import { RequestWithUser } from 'src/common/types/request.interface';
 
 @Controller('drivers')
 export class DriversController {
