@@ -1,5 +1,5 @@
 @url=http://localhost:3000
-@auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiY2QxYWFkOS1lYmM3LTQyODAtYmRkOS1jNjNiYjNlOTdlZmYiLCJlbWFpbCI6Im11cmNob2lkQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiaXNBY3RpdmUiOnRydWUsImlhdCI6MTc1MTU0NjU2NSwiZXhwIjoxNzUxNTUwMTY1fQ.cq4aqoAh8ykAs52QkfsHiB-ic4AzZAGeyYrCMmO_n2g
+@auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0OTZlMzQwYi1jYWJlLTQ3NjItOTcxYy00ZjM2YmFkNmUzN2QiLCJlbWFpbCI6Im11cmNob2lkQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiaXNBY3RpdmUiOnRydWUsImlhdCI6MTc1MTU3MTc1MCwiZXhwIjoxNzUxNTc1MzUwfQ.PXCgzvSs9nlb9GyPFlIrcLutf6tI_Ek0MRs3rcZtXYA
 @id=bcd1aad9-ebc7-4280-bdd9-c63bb3e97eff
 
 ### Seed fake data (clears and seeds all tables)
@@ -11,9 +11,9 @@ Content-Type: application/json
 
 {
   "name": "Michael Kamau",
-  "email": "murchoid@example.com",
+  "email": "michael.kamau@example.com",
   "password": "securePassword123",
-  "role": "ADMIN"
+  "role": "DRIVER"
 }
 
 ### Get all users
@@ -38,9 +38,10 @@ DELETE {{url}}/users/dbf0f12e-6fc8-43d4-94e0-e5954e6ead06
 ### Create a driver
 POST {{url}}/drivers
 Content-Type: application/json
+Authorization:  Bearer {{auth}}
 
 {
-  "userId": "dbf0f12e-6fc8-43d4-94e0-e5954e6ead06",
+  "userId": "3ad4ece7-c9c7-4928-8d8a-bbf6a1f6f7b1",
   "isAvailable": true,
   "baseLat": -1.2921,
   "baseLng": 36.8219
@@ -95,18 +96,19 @@ DELETE {{url}}/vehicles/:id
 ### Create a booking
 POST {{url}}/bookings
 Content-Type: application/json
+Authorization: Bearer {{auth}}
 
 {
-  "customerId": "8b911224-263c-4bfe-9044-d74e460b4639",
+  "customerId": "496e340b-cabe-4762-971c-4f36bad6e37d",
   "pickupAddress": "123 Main St",
   "dropoffAddress": "456 Elm St",
-  "pickupLat": 42.355492,
-  "pickupLng": -71.048611,
+  "pickupLat": 8.681495,
+  "pickupLng": 49.41461,
   "dropoffLat": -1.3000,
   "dropoffLng": 36.8000,
-  "distanceKm":null ,
-  "durationMins":null,
-  "price":null,
+  "distanceKm": null,
+  "durationMins": null,
+  "price": null,
   "stutus": "PENDING",
   "paymentStatus": "PENDING",
   "paymentMethod": "CASH"
@@ -185,3 +187,11 @@ Authorization: Bearer {{auth}}
 GET {{url}}/analytics/admin
 Authorization: Bearer {{auth}}
 
+###Make payment
+POST {{url}}/payments
+Content-Type: application/json
+
+{
+  "phoneNumber": "254799431541",
+  "bookingId": "d3f4abd1-3e9c-4f28-ba89-c8669d941d0b"
+}

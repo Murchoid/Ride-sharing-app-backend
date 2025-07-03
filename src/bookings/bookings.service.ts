@@ -44,7 +44,8 @@ export class BookingsService {
       isAvailable: true,
       isActive: true,
     });
-    if (!drivers) return 'No driver is available now try again later';
+    console.log(drivers);
+    if (drivers.length == 0) throw new NotFoundException('No driver is available now try again later');
     const user = await this.userRepo.findBy({
       id: In([customerId]),
     });

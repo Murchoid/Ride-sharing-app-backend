@@ -36,6 +36,7 @@ export class PaymentsService {
     const token = await getAccessToken(consumerKey, consumerSecret);
     const response = await triggerStkPush(phoneNumber, amount, token, shortcode, passkey,callbackUrl);
 
+    console.log(response);
 
     const status = 'PAID';
 

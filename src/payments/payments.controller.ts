@@ -2,11 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { PaymentsService } from './payments.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
+import { Public } from 'src/auths/decorators/public.decorator';
 
 @Controller('payments')
 export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
 
+  @Public()
   @Post()
   create(@Body() createPaymentDto: CreatePaymentDto) {
     return this.paymentsService.create(createPaymentDto);

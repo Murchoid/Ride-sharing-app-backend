@@ -16,7 +16,7 @@ import { RequestWithUser } from 'src/common/types/request.interface';
 export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}
 
-  @ROLES(eROLE.CUSTOMER)
+  @ROLES(eROLE.CUSTOMER, eROLE.ADMIN)
   @Post()
   create(@Body() createBookingDto: CreateBookingDto) {
     return this.bookingsService.create(createBookingDto);
