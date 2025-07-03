@@ -39,6 +39,7 @@ export class PaymentsService {
     console.log(response);
 
     const status = 'PAID';
+    
 
   }
 

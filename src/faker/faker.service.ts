@@ -30,8 +30,6 @@ export class FakerService {
       email: faker.internet.email(),
       password: faker.internet.password(),
       role: 'CUSTOMER',
-      accessToken: faker.string.uuid(),
-      refreshToken: faker.string.uuid(),
     };
   }
 
