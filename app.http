@@ -1,5 +1,5 @@
 @url=http://localhost:3000
-@auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0OTZlMzQwYi1jYWJlLTQ3NjItOTcxYy00ZjM2YmFkNmUzN2QiLCJlbWFpbCI6Im11cmNob2lkQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiaXNBY3RpdmUiOnRydWUsImlhdCI6MTc1MTYxMzk4NSwiZXhwIjoxNzUxNjE3NTg1fQ.JQjmUcQhtX36W1eSOrLfLzvZsPGZxbN2Sv807iJxGfc
+@auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0OTZlMzQwYi1jYWJlLTQ3NjItOTcxYy00ZjM2YmFkNmUzN2QiLCJlbWFpbCI6Im11cmNob2lkQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiaXNBY3RpdmUiOnRydWUsImlhdCI6MTc1MTYyMTUyMiwiZXhwIjoxNzUxNjI1MTIyfQ.Hl1BE4nCifcEQI2035FJry1-63SfKDD2IjPNjXe3S1M
 @id=bcd1aad9-ebc7-4280-bdd9-c63bb3e97eff
 
 ### Seed fake data (clears and seeds all tables)
@@ -55,13 +55,14 @@ Authorization: Bearer {{auth}}
 GET {{url}}/drivers/:id
 
 ### Update a driver
-PATCH {{url}}/drivers/:id
+PATCH {{url}}/drivers/15300cc3-9918-474a-bb78-0c05ef913cd3
 Content-Type: application/json
+Authorization: Bearer {{auth}}
 
 {
-  "isAvailable": false,
-  "baseLat": -1.3000,
-  "baseLng": 36.8000
+  "isAvailable": true,
+  "baseLat": -0.57534,
+  "baseLng": 37.3269
 }
 
 ### Delete a driver

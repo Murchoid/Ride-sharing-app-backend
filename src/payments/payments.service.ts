@@ -45,7 +45,12 @@ export class PaymentsService {
         merchantRequestId: response.merchantRequestId,
       });
 
-      await this.paymentRepo.save(preparedPayment);
+      try{
+          await this.paymentRepo.save(preparedPayment);
+      }catch(e){
+        if(e.code === '23505') throw new Error('Booking already Exist i will fix')
+        throw new Error(e);
+      }
     }
 
   }
