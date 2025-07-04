@@ -66,7 +66,7 @@ Clean, predictable API structure with Swagger docs`,
     .swagger-ui .topbar { display: none; }  
     .swagger-ui .info { margin-bottom: 20px; }
   `,
-    customSiteTitle: 'Students Record Management System',
+    customSiteTitle: 'Ride sharing app',
   });
 
 
