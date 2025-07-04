@@ -20,6 +20,12 @@ export class PaymentsController {
     return this.paymentsService.create(createPaymentDto);
   }
 
+  @Post('/callback')
+  @Public()
+  handleMpesaCallback(@Body() body: any) {
+    return this.paymentsService.handleMpesaCallback(body);
+  }
+
   @ApiOperation({ summary: 'Get all payments', description: 'Returns all payments that are done' })
   @ROLES(eROLE.ADMIN)
   @Get()

@@ -1,5 +1,5 @@
 @url=http://localhost:3000
-@auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0OTZlMzQwYi1jYWJlLTQ3NjItOTcxYy00ZjM2YmFkNmUzN2QiLCJlbWFpbCI6Im11cmNob2lkQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiaXNBY3RpdmUiOnRydWUsImlhdCI6MTc1MTU3NTkwNSwiZXhwIjoxNzUxNTc5NTA1fQ.C9V5ade0--cY6PMey5xGTAiI04FuP421kF8xb-RjslQ
+@auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0OTZlMzQwYi1jYWJlLTQ3NjItOTcxYy00ZjM2YmFkNmUzN2QiLCJlbWFpbCI6Im11cmNob2lkQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiaXNBY3RpdmUiOnRydWUsImlhdCI6MTc1MTYxMzk4NSwiZXhwIjoxNzUxNjE3NTg1fQ.JQjmUcQhtX36W1eSOrLfLzvZsPGZxbN2Sv807iJxGfc
 @id=bcd1aad9-ebc7-4280-bdd9-c63bb3e97eff
 
 ### Seed fake data (clears and seeds all tables)
@@ -112,7 +112,7 @@ Authorization: Bearer {{auth}}
   "price": null,
   "stutus": "PENDING",
   "paymentStatus": "PENDING",
-  "paymentMethod": "CASH"
+  "paymentMethod": "MPESA"
 }
 
 ### Get all bookings
@@ -190,10 +190,14 @@ GET {{url}}/analytics/admin
 Authorization: Bearer {{auth}}
 
 ###Make payment
-POST {{url}}/payments
+POST {{url}}/payments/pay-ride
 Content-Type: application/json
 
 {
   "phoneNumber": "254799431541",
-  "bookingId": "d3f4abd1-3e9c-4f28-ba89-c8669d941d0b"
+  "bookingId": "d1ef7559-513d-448b-8d21-69801ddafbe9"
 }
+
+###Get all payments
+GET {{url}}/payments
+Authorization: Bearer {{auth}}

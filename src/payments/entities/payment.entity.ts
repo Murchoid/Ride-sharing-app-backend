@@ -16,6 +16,9 @@ export class Payment {
   @Column('float')
   amount: number;
 
+  @Column({nullable:true})
+  merchantRequestId: string
+
   @Column({ type: 'enum', enum: ['PENDING', 'SUCCESS', 'FAILED'], default: 'PENDING' })
   status: string;
 

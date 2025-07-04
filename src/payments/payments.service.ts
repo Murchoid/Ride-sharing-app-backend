@@ -34,14 +34,47 @@ export class PaymentsService {
     const callbackUrl = this.configService.get('MPESA_CALLBACK_URL');
 
     const token = await getAccessToken(consumerKey, consumerSecret);
-    const response = await triggerStkPush(phoneNumber, amount, token, shortcode, passkey,callbackUrl);
+    const response = await triggerStkPush(phoneNumber, 1/*amount*/, token, shortcode, passkey,callbackUrl);
 
     console.log(response);
+    if(response){
+      const preparedPayment =  this.paymentRepo.create({
+        booking:booking,
+        phoneNumber: phoneNumber,
+        amount: 1/*amount*/,
+        merchantRequestId: response.merchantRequestId,
+      });
 
-    const status = 'PAID';
-    
+      await this.paymentRepo.save(preparedPayment);
+    }
 
   }
+
+  async handleMpesaCallback(data: any) {
+
+  console.log(data);
+
+  const resultCode = data.Body.stkCallback.ResultCode;
+  const phoneNumber = data.Body.stkCallback.CallbackMetadata?.Item?.find(i => i.Name === 'PhoneNumber')?.Value;
+  const amount = data.Body.stkCallback.CallbackMetadata?.Item?.find(i => i.Name === 'Amount')?.Value;
+  const merchantRequestId = data.Body.stkCallback.MerchantRequestID;
+
+  const payment = await this.paymentRepo.findOne({ where: { merchantRequestId } });
+
+  if (!payment) throw new NotFoundException('Payment not found');
+
+  payment.status = resultCode === 0 ? 'SUCCESS' : 'FAILED';
+  await this.paymentRepo.save(payment);
+
+  if (resultCode === 0) {
+    const booking = await this.bookingRepo.findOne({ where: { id: payment.booking.id } });
+    if(!booking) throw new NotFoundException('Booking not found');
+    booking.paymentStatus = 'PAID';
+    await this.bookingRepo.save(booking);
+  }
+
+  return { status: 'ok' };
+}
 
   async findAll() {
     return await this.paymentRepo.find();
