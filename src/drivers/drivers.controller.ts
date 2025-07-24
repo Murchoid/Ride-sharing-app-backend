@@ -36,19 +36,20 @@ export class DriversController {
     return this.driversService.findAll();
   }
 
-  @ApiOperation({ summary: 'Get driver by ID', description: 'Fetches details of a specific driver (admin only)' })
-  @ROLES(eROLE.ADMIN)
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.driversService.findOne(id);
-  }
-
+  
   @ApiOperation({ summary: 'Get own driver profile', description: 'Driver fetches their own driver profile' })
   @ROLES(eROLE.DRIVER)
   @Get('/me')
   findOwn(@Req() req: RequestWithUser) {
     const { sub } = req.user;
-    return this.driversService.findOne(sub);
+    return this.driversService.findOwn(sub);
+  }
+  
+  @ApiOperation({ summary: 'Get driver by ID', description: 'Fetches details of a specific driver (admin only)' })
+  @ROLES(eROLE.ADMIN)
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.driversService.findOne(id);
   }
 
   @ApiOperation({ summary: 'Update driver', description: 'Modifies driver info (admin only)' })

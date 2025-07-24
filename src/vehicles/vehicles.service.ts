@@ -33,7 +33,9 @@ export class VehiclesService {
   }
 
   async findAll() {
-    const vehicle = await this.vehicleRepo.find();
+    const vehicle = await this.vehicleRepo.find({
+      relations: ['driver']
+    });
     return vehicle;
   }
 
@@ -41,6 +43,15 @@ export class VehiclesService {
     const vehicle = await this.vehicleRepo.findOne({
       where: { id, isRetired: false },
     });
+    return vehicle;
+  }
+
+  async findDriverCar(id: string) {
+    const vehicle = await this.vehicleRepo.findOne({
+      where: { driver: { id }, isRetired: false },
+      relations: ['driver'],
+    });
+    if (!vehicle) throw new NotFoundException('Vehicle not found for this driver');
     return vehicle;
   }
 

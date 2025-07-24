@@ -11,5 +11,6 @@ import { DistanceService } from 'src/distance/distance.service';
   imports: [TypeOrmModule.forFeature([Booking, User, Driver])],
   controllers: [BookingsController],
   providers: [BookingsService, DistanceService],
+  exports: [BookingsService], 
 })
 export class BookingsModule {}

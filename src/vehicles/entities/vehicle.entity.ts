@@ -20,9 +20,7 @@ export class Vehicle {
   @Column({ unique: true })
   plate: string;
 
-  @OneToOne(() => Driver, (driver) => driver.vehicle, {
-    cascade: ['soft-remove'],
-  })
+  @OneToOne(() => Driver, (driver) => driver.vehicle)
   @JoinColumn()
   driver: Driver;
 

@@ -75,6 +75,7 @@ export class BookingsService {
       ...createBookingDto,
       driver: driver as Driver,
       customer: user[0],
+      status: "ACCEPTED",
       distanceKm,
       durationMins,
       price,
@@ -85,10 +86,17 @@ export class BookingsService {
     return booking;
   }
 
-  async findAll() {
-    const booking = await this.bookingRepo.find();
-    return booking;
-  }
+async findAll() {
+  const bookings = await this.bookingRepo.find({
+    relations: {
+      driver: {
+        user: true,
+      },
+      customer: true,
+    },
+  });
+  return bookings;
+}
 
   async findOne(id: string) {
     const booking = await this.bookingRepo.findOneBy({
@@ -97,6 +105,20 @@ export class BookingsService {
     return booking;
   }
 
+  async findOneBy(customerId: string){
+    const booking = await this.bookingRepo.find({
+      where:{customer: {id: customerId}},
+      relations:{
+    driver: {
+      vehicle: true,
+      user: true,
+    },
+    customer: true,
+    // add other relations as needed
+  },
+    });
+    return booking; 
+  }
   async updateBookingStatus(
     id: string,
     status: UpdateBookingStatusDto['status'],
@@ -217,6 +239,14 @@ export class BookingsService {
       return finalBooking;
     }
 
+    return await this.bookingRepo.save(booking);
+  }
+
+  async updateBooking(id: string, updateBookingDto: UpdateBookingDto) {
+    const booking = await this.bookingRepo.findOneBy({ id });
+    if (!booking) throw new NotFoundException('Booking not found!');
+
+    Object.assign(booking, updateBookingDto);
     return await this.bookingRepo.save(booking);
   }
 }

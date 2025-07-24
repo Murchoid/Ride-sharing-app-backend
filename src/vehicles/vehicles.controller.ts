@@ -13,6 +13,7 @@ import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { ROLES } from 'src/auths/decorators/roles.decorator';
 import { eROLE } from 'src/common/types/roles.types';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/auths/decorators/public.decorator';
 
 @ApiTags('Vehicles')
 @ApiBearerAuth()
@@ -28,11 +29,19 @@ export class VehiclesController {
   }
 
   @ApiOperation({ summary: 'Get all vehicles', description: 'Fetches all vehicle details (admin only)' })
-  @ROLES(eROLE.ADMIN)
+  @Public()
   @Get()
   findAll() {
     return this.vehiclesService.findAll();
   }
+
+  @ApiOperation({ summary: 'Get vehicle by ID', description: 'Fetches vehicle details (admin only)' })
+  @ROLES(eROLE.CUSTOMER, eROLE.DRIVER)
+  @Get('/driver/:id')
+  findDriverVehicle(@Param('id') id: string) {
+    return this.vehiclesService.findDriverCar(id);
+  }
+
 
   @ApiOperation({ summary: 'Get vehicle by ID', description: 'Fetches vehicle details (admin only)' })
   @ROLES(eROLE.ADMIN)

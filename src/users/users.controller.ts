@@ -25,7 +25,7 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Refresh token', description: 'Issues new access and refresh tokens using a valid refresh token' })
   @Public()
-  @Post()
+  @Post('/register')
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
@@ -37,6 +37,14 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+   @ApiOperation({ summary: 'Get own profile', description: 'Returns authenticated user profile data' })
+  @ROLES(eROLE.CUSTOMER, eROLE.DRIVER, eROLE.ADMIN)
+  @Get('/me')
+  findOwn(@Req() req: RequestWithUser) {
+    const { sub } = req.user;
+    return this.usersService.findOne(sub);
+  }
+
   @ApiOperation({ summary: 'Get specific user', description: 'Returns any authenticated user profile data (Admin only)' })
   @ROLES(eROLE.ADMIN)
   @Get(':id')
@@ -44,13 +52,6 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @ApiOperation({ summary: 'Get own profile', description: 'Returns authenticated user profile data' })
-  @ROLES(eROLE.CUSTOMER)
-  @Get('/me')
-  findOwn(@Req() req: RequestWithUser) {
-    const { sub } = req.user;
-    return this.usersService.findOne(sub);
-  }
 
   @ApiOperation({ summary: 'Update user', description: 'Updates user info by ID (self or admin)' })
   @ROLES(eROLE.CUSTOMER)

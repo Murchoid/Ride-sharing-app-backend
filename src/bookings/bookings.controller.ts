@@ -21,18 +21,25 @@ export class BookingsController {
 
   @ApiOperation({ summary: 'Create booking', description: 'Creates a ride booking and auto-assigns a driver (admin customer)' })
   @ROLES(eROLE.CUSTOMER, eROLE.ADMIN)
-  @Post()
+  @Post('create')
   create(@Body() createBookingDto: CreateBookingDto) {
     return this.bookingsService.create(createBookingDto);
   }
 
   @ApiOperation({ summary: 'Get user bookings', description: 'Gets all bookings for the authenticated user (admin only)' })
-  @ROLES(eROLE.ADMIN)
+  @ROLES(eROLE.ADMIN, eROLE.DRIVER)
   @Get()
   findAll() {
     return this.bookingsService.findAll();
   }
-
+  @ApiOperation({ summary: 'Get user own booking details', description: 'Get own bookings' })
+  @ROLES(eROLE.CUSTOMER)
+  @Get('/me')
+  findOwn(@Req() req: RequestWithUser) {
+    const { sub } = req.user;
+    return this.bookingsService.findOneBy(sub);
+  }
+  
   @ApiOperation({ summary: 'Get user booking using id', description: 'Gets specific user bookings for the authenticated user (admin only)' })
   @ROLES(eROLE.ADMIN)
   @Get(':id')
@@ -40,16 +47,8 @@ export class BookingsController {
     return this.bookingsService.findOne(id);
   }
 
-  @ApiOperation({ summary: 'Get user own booking details', description: 'Get own bookings' })
-  @ROLES(eROLE.CUSTOMER)
-  @Get('/me')
-  findOwn(@Req() req: RequestWithUser) {
-    const { sub } = req.user;
-    return this.bookingsService.findOne(sub);
-  }
-
   @ApiOperation({ summary: 'Update booking status', description: 'Changes status (ACCEPTED, COMPLETED, CANCELLED) (admin,driver only)' })
-  @ROLES(eROLE.DRIVER, eROLE.ADMIN)
+  @ROLES(eROLE.DRIVER, eROLE.ADMIN, eROLE.CUSTOMER)
   @Patch(':id/status')
   updateBookingStatus(
     @Param('id') id: string,
@@ -83,7 +82,7 @@ export class BookingsController {
 
   @ApiOperation({ summary: 'User booking status', description: 'user request change booking status (COMPLETE, CANCEL)' })
   @ROLES(eROLE.CUSTOMER)
-  @Patch(':id/status')
+  @Patch(':id/payment-status')
   updatePayment(
     @Param('id') id: string,
     @Body() body: UpdateBookingPaymentStatusDto,
@@ -92,5 +91,15 @@ export class BookingsController {
       id,
       body.paymentStatus,
     );
+  }
+
+  @ApiOperation({ summary: 'Update booking details', description: 'Updates booking details (admin only)' })
+  @ROLES(eROLE.ADMIN, eROLE.CUSTOMER, eROLE.DRIVER)
+  @Patch(':id/update')
+  updateBooking(
+    @Param('id') id: string,
+    @Body() updateBookingDto: UpdateBookingDto,
+  ) {
+    return this.bookingsService.updateBooking(id, updateBookingDto);
   }
 }

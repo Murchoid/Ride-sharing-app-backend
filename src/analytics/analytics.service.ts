@@ -1,6 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateAnalyticsDto } from './dto/create-analytics.dto';
-import { UpdateAnalyticsDto } from './dto/update-analytics.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -51,7 +49,7 @@ export class AnalyticsService {
 
     return {
       totalEarnings,
-      totalRids: bookings.length,
+      totalRides: bookings.length,
       averageDistance,
     };
   }

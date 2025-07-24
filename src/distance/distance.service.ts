@@ -107,4 +107,17 @@ export class DistanceService {
 
     return closest;
   }
+
+  async getCoords(
+    address: string,
+  ){
+    const apiKey = this.configService.getOrThrow<string>(
+      'OPENROUTESERVICE_KEY',
+    );
+    const response = await fetch(
+    `https://api.openrouteservice.org/geocode/autocomplete?api_key=${apiKey}&text=${encodeURIComponent(address)} Kenya`
+  );
+  const data = await response.json();
+  return data.features[0].geometry.coordinates;
+  }
 }

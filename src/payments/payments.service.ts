@@ -34,14 +34,14 @@ export class PaymentsService {
     const callbackUrl = this.configService.get('MPESA_CALLBACK_URL');
 
     const token = await getAccessToken(consumerKey, consumerSecret);
-    const response = await triggerStkPush(phoneNumber, 1/*amount*/, token, shortcode, passkey,callbackUrl);
+    const response = await triggerStkPush(phoneNumber, amount, token, shortcode, passkey,callbackUrl);
 
     console.log(response);
     if(response){
       const preparedPayment =  this.paymentRepo.create({
         booking:booking,
         phoneNumber: phoneNumber,
-        amount: 1/*amount*/,
+        amount: amount,
         merchantRequestId: response.merchantRequestId,
       });
 
@@ -89,4 +89,9 @@ export class PaymentsService {
     return await this.paymentRepo.findOneBy({id});
   }
 
+  async findOneByBookingId(id: string){
+    return await this.paymentRepo.findOneBy({ 
+      booking: { id },
+    });
+  }
 }

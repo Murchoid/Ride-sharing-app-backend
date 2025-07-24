@@ -8,10 +8,11 @@ import {
 } from 'class-validator';
 
 enum eSTATUS {
-  PENDING = 'PENDING',
-  ACCEPTED = 'ACCEPTED',
-  COMPLETED = 'COMPLETED',
-  CANCELLED = 'CANCELLED',
+  PENDING = "PENDING",
+  ACCEPTED = "ACCEPTED",
+  IN_PROGRESS = "IN_PROGRESS",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED"
 }
 
 enum ePAYMENTSMETHOD {
@@ -23,6 +24,7 @@ enum ePAYMENTSMETHOD {
 enum ePAYMENTSTUTUS {
   PENDING = 'PENDING',
   PAID = 'PAID',
+  FAILED = 'FAILED'
 }
 
 export class CreateBookingDto {

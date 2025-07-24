@@ -1,5 +1,5 @@
-@url=http://localhost:3000
-@auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0OTZlMzQwYi1jYWJlLTQ3NjItOTcxYy00ZjM2YmFkNmUzN2QiLCJlbWFpbCI6Im11cmNob2lkQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiaXNBY3RpdmUiOnRydWUsImlhdCI6MTc1MTYyMTUyMiwiZXhwIjoxNzUxNjI1MTIyfQ.Hl1BE4nCifcEQI2035FJry1-63SfKDD2IjPNjXe3S1M
+@url=http://localhost:3001
+@auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0YTBiMDM4ZS0zMmFkLTRjYmYtYmMyYi0xMzA3ZGJlM2ExMGEiLCJlbWFpbCI6InNhcmFoQGdtYWlsLmNvbSIsInJvbGUiOiJDVVNUT01FUiIsImlzQWN0aXZlIjp0cnVlLCJpYXQiOjE3NTMzMDI0MTQsImV4cCI6MTc1MzMwNjAxNH0.m9M9M3segKzfGecIrv-wMB9vXzcDS4ryDMCIfj_KhhY
 @id=bcd1aad9-ebc7-4280-bdd9-c63bb3e97eff
 
 ### Seed fake data (clears and seeds all tables)
@@ -22,6 +22,11 @@ Authorization: Bearer {{auth}}
 
 ### Get a user by id
 GET {{url}}/users/dbf0f12e-6fc8-43d4-94e0-e5954e6ead06
+
+### Get a self user
+GET {{url}}/users/me
+Content-Type: application/json
+Authorization: Bearer {{auth}}
 
 ### Update a user
 PATCH {{url}}/users/:id
@@ -49,6 +54,11 @@ Authorization:  Bearer {{auth}}
 
 ### Get all drivers
 GET {{url}}/drivers
+Authorization: Bearer {{auth}}
+
+
+### Get own driver
+GET {{url}}/drivers/me
 Authorization: Bearer {{auth}}
 
 ### Get a driver by id
@@ -96,7 +106,7 @@ Content-Type: application/json
 DELETE {{url}}/vehicles/:id
 
 ### Create a booking
-POST {{url}}/bookings
+POST {{url}}/bookings/create
 Content-Type: application/json
 Authorization: Bearer {{auth}}
 
@@ -118,6 +128,10 @@ Authorization: Bearer {{auth}}
 
 ### Get all bookings
 GET {{url}}/bookings
+Authorization: Bearer {{auth}}
+
+### Get own bookings
+GET {{url}}/bookings/me
 Authorization: Bearer {{auth}}
 
 ### Get a booking by id
@@ -202,3 +216,13 @@ Content-Type: application/json
 ###Get all payments
 GET {{url}}/payments
 Authorization: Bearer {{auth}}
+
+### AI User Query
+POST {{url}}/ai/user-query
+Content-Type: application/json
+Authorization: Bearer {{auth}}
+
+{
+  "prompt": "Show me my analytics for the last month"
+}
+

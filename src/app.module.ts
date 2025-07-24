@@ -16,6 +16,8 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { AtGuard } from './auths/guards/at.guards';
 import { RolesGuard } from './auths/guards/roles.guards';
 import { PaymentsModule } from './payments/payments.module';
+import { AiModule } from './ai/ai.module';
+import { ChatsModule } from './chats/chats.module';
 
 @Module({
   imports: [
@@ -51,6 +53,8 @@ import { PaymentsModule } from './payments/payments.module';
     AnalyticsModule,
     AuthsModule,
     PaymentsModule,
+    AiModule,
+    ChatsModule,
   ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: CacheInterceptor },

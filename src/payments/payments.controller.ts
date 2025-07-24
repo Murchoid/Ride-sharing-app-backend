@@ -33,6 +33,13 @@ export class PaymentsController {
     return this.paymentsService.findAll();
   }
 
+  @ROLES(eROLE.CUSTOMER, eROLE.DRIVER)
+  @ApiOperation({ summary: 'Get specific payment using booking id', description: 'Returns a specific payment' })
+  @Get('/me/:id')
+  findOneByBookingId(@Param('id') id: string) {
+    return this.paymentsService.findOneByBookingId(id);
+  }
+
   @ROLES(eROLE.ADMIN)
   @ApiOperation({ summary: 'Get specific payment using id', description: 'Returns a specific payment' })
   @Get(':id')

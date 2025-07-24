@@ -35,13 +35,31 @@ export class DriversService {
   }
 
   async findAll() {
-    const driver = await this.driverRepo.find();
+    const driver = await this.driverRepo.find({
+      relations: {
+        user: true,
+        vehicle: true,
+        bookings: true,
+      },
+      
+    });
     return driver;
   }
 
   async findOne(id: string) {
     const driver = await this.driverRepo.findOne({
       where: { id, isActive: true },
+    });
+
+    return driver;
+  }
+
+  async findOwn (id: string) {
+    const driver = await this.driverRepo.findOne({
+      where: {user: {id}},
+      relations:{
+        user: true
+      }
     });
 
     return driver;
