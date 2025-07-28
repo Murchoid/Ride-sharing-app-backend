@@ -1,141 +1,143 @@
-// src/chats/gateway/chat.gateway.ts
 import {
   SubscribeMessage,
   WebSocketGateway,
-  WebSocketServer,
-  OnGatewayInit,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  MessageBody,
   ConnectedSocket,
+  MessageBody,
+  WebSocketServer,
 } from '@nestjs/websockets';
+import { Socket, Server } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
-import { Server, Socket } from 'socket.io';
-import { Logger, UnauthorizedException } from '@nestjs/common';
-import { ChatService } from '../chats.service';
 import { ConfigService } from '@nestjs/config';
+import { UnauthorizedException, Logger } from '@nestjs/common';
 import { CreateMessageDto } from '../dto/createMessage.dto';
+import { ChatService } from '../chats.service';
 
 @WebSocketGateway({
   cors: {
     origin: '*',
+    methods: ['GET', 'POST'],
     credentials: true,
   },
 })
-export class ChatGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
-  private logger = new Logger('ChatGateway');
-  private onlineUsers = new Map<string, string>();
+export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  private onlineUsers: Map<string, Set<string>> = new Map();
+  private readonly logger = new Logger(ChatGateway.name);
+
   @WebSocketServer()
   server: Server;
 
   constructor(
-    private jwtService: JwtService,
-    private chatService: ChatService,
-    private configService: ConfigService
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+    private readonly chatService: ChatService,
   ) {}
 
-  afterInit(server: Server) {
-    server.on('error', (error) => {
-      console.error('Socket Server Error:', error);
-    });
-    this.logger.log('WebSocket initialized');
-  }
-
   async handleConnection(client: Socket) {
-    console.log('Auth header:', client.handshake.headers.authorization);
-    console.log('Auth token:', client.handshake.auth.token);
-    
+    this.logger.log(`New client connected: ${client.id}`);
+
     try {
       const token =
-        client.handshake.auth.token ||
-        client.handshake.headers.authorization?.split(' ')[1];
+        client.handshake.auth?.token ||
+        client.handshake.headers?.authorization?.split(' ')[1];
 
       if (!token) {
         throw new UnauthorizedException('No token provided');
       }
 
-      // Verify the token
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'), 
+      const payload = this.jwtService.verify(token, {
+        secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
       });
 
-      // Store user data in socket
       client.data.user = payload;
+      const userId = payload.sub;
 
-      this.onlineUsers.set(payload.sub, client.id);
-      this.logger.log(`Client connected: ${client.id} (user ${payload.sub})`);
+      client.join(userId);
 
-      return true;
+      if (!this.onlineUsers.has(userId)) {
+        this.onlineUsers.set(userId, new Set());
+      }
+      this.onlineUsers.get(userId)?.add(client.id);
+
+      this.logger.log(`Client ${client.id} authenticated as user ${userId}`);
     } catch (error) {
-      console.error('Detailed WS Auth Error:', {
-        message: error.message,
-        stack: error.stack,
-        token: client.handshake.auth.token
-      });
+      this.logger.error(`Connection error from client ${client.id}: ${error.message}`);
       client.disconnect();
-      return false;
     }
   }
 
   handleDisconnect(client: Socket) {
-    this.logger.log(`Client disconnected: ${client.id}`);
-    for (const [userId, socketId] of this.onlineUsers) {
-      if (socketId === client.id) {
+    const userId = client.data.user?.sub;
+    if (userId && this.onlineUsers.has(userId)) {
+      const userSockets = this.onlineUsers.get(userId);
+      userSockets?.delete(client.id);
+      if (userSockets?.size === 0) {
         this.onlineUsers.delete(userId);
-        break;
       }
+      this.logger.log(`Client disconnected: ${client.id} (user ${userId})`);
+    } else {
+      this.logger.log(`Client disconnected: ${client.id} (no user data)`);
     }
   }
 
   @SubscribeMessage('send_message')
   async handleMessage(
-    @MessageBody()
-    data: CreateMessageDto,
+    @MessageBody() data: CreateMessageDto,
     @ConnectedSocket() client: Socket,
   ) {
     try {
-      // Save the message
-      const savedMessage = await this.chatService.saveMessage(data);
+      const messageToSave = {
+        ...data,
+        createdAt: new Date(),
+      };
 
-      // Get receiver's socket ID
-      const receiverSocketId = this.onlineUsers.get(data.receiverId);
-      
-      // Emit to receiver if online
-      if (receiverSocketId) {
-        this.server.to(receiverSocketId).emit('receive_message', savedMessage);
-      }
+      const savedMessage = await this.chatService.saveMessage(messageToSave);
 
-      // Emit back to sender to confirm message was saved
-      client.emit('message_sent', savedMessage);
+      // Emit to both sender and receiver
+      this.server.to(data.receiverId).emit('receive_message', savedMessage);
+      this.server.to(data.senderId).emit('receive_message', savedMessage);
 
-      return savedMessage;
+      this.logger.log(
+        `Message ${savedMessage.id} from ${data.senderId} to ${data.receiverId} delivered`
+      );
+
+      return { success: true, message: savedMessage };
     } catch (error) {
-      this.logger.error('Error handling message:', error);
-      client.emit('message_error', { error: 'Failed to save message' });
+      this.logger.error('Message handling error:', error);
+      client.emit('message_error', {
+        error: 'Failed to save message',
+        originalMessage: data,
+      });
+      return { success: false, error: error.message };
     }
   }
 
-  @SubscribeMessage('send_notification')
-  async handleNotification(
-    @MessageBody() data: { receiverId: string; title: string; body: string },
-    @ConnectedSocket() client: Socket,
-  ) {
-    try {
-      // Save notification
-      await this.chatService.saveNotification(data);
+  // Add this method to your ChatGateway
 
-      // Get receiver's socket ID
-      const receiverSocketId = this.onlineUsers.get(data.receiverId);
-      
-      // Emit to receiver if online
-      if (receiverSocketId) {
-        this.server.to(receiverSocketId).emit('receive_notification', data);
-      }
-    } catch (error) {
-      this.logger.error('Error handling notification:', error);
-      client.emit('notification_error', { error: 'Failed to save notification' });
-    }
-  }
+sendBookingStatusUpdate(booking: {
+  id: string;
+  userId: string;
+  status: string;
+  role: string,
+  pickup?: string;
+  dropoff?: string;
+  price?: number;
+  driverName?: string;
+  vehicleInfo?: string;
+  passengerName?: string;
+}) {
+  this.server.to(booking.userId).emit('booking_status_updated', {
+    id: booking.id,
+    status: booking.status,
+    role: booking.role,
+    pickup: booking.pickup,
+    dropoff: booking.dropoff,
+    price: booking.price,
+    driverName: booking.driverName,
+    vehicleInfo: booking.vehicleInfo,
+    passengerName: booking.passengerName
+  });
+}
+
 }

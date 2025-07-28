@@ -58,7 +58,8 @@ export class DriversService {
     const driver = await this.driverRepo.findOne({
       where: {user: {id}},
       relations:{
-        user: true
+        user: true,
+        vehicle:true
       }
     });
 

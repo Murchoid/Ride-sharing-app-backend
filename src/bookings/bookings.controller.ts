@@ -53,9 +53,10 @@ export class BookingsController {
   updateBookingStatus(
     @Param('id') id: string,
     @Body() body: any,
+    @Req() req: RequestWithUser,
   ) {
-    console.log(body);
-    return this.bookingsService.updateBookingStatus(id, body.status);
+    console.log(id);
+    return this.bookingsService.updateBookingStatus(id, body.status, req.user.role);
   }
 
   @ApiOperation({ summary: 'Update booking payment method', description: 'Modifies payment method (PAID)' })

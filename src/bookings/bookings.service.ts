@@ -13,6 +13,7 @@ import { Booking } from './entities/booking.entity';
 import { Driver } from 'src/drivers/entities/driver.entity';
 import { User } from 'src/users/entities/user.entity';
 import { DistanceService } from 'src/distance/distance.service';
+import { ChatGateway } from 'src/chats/gateway/chat.gateway';
 
 @Injectable()
 export class BookingsService {
@@ -24,6 +25,7 @@ export class BookingsService {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
     private distanceService: DistanceService,
+    private readonly chatGateway: ChatGateway,
   ) {}
 
   async create(createBookingDto: CreateBookingDto) {
@@ -91,6 +93,7 @@ async findAll() {
     relations: {
       driver: {
         user: true,
+        vehicle: true
       },
       customer: true,
     },
@@ -122,10 +125,17 @@ async findAll() {
   async updateBookingStatus(
     id: string,
     status: UpdateBookingStatusDto['status'],
+    role: string
   ) {
     const booking = await this.bookingRepo.findOne({
       where: { id },
-      relations: ['driver'],
+      relations: {
+        driver:{
+          user: true,
+          vehicle: true
+        },
+        customer: true
+      },
     });
 
     if (!booking) throw new NotFoundException('Booking not found!');
@@ -148,6 +158,34 @@ async findAll() {
 
     booking.status = status;
 
+    if(role === "CUSTOMER"){
+      this.chatGateway.sendBookingStatusUpdate({
+      id: booking.id,
+      userId: booking.driver.user.id,
+      status: booking.status,
+      role: "CUSTOMER",
+      pickup: booking.pickupAddress,
+      dropoff: booking.dropoffAddress,
+      price: booking.price,
+      driverName: booking.driver.user.name,
+      vehicleInfo: booking.driver.vehicle.plate,
+      passengerName: booking.customer.name
+      });
+    }
+    else if(role === "DRIVER"){
+      this.chatGateway.sendBookingStatusUpdate({
+      id: booking.id,
+      userId: booking.customer.id,
+      status: booking.status,
+      role: "DRIVER",
+      pickup: booking.pickupAddress,
+      dropoff: booking.dropoffAddress,
+      price: booking.price,
+      driverName: booking.driver.user.name,
+      vehicleInfo: booking.driver.vehicle.plate,
+      passengerName: booking.customer.name
+      });
+    }
     return await this.bookingRepo.save(booking);
   }
 
@@ -250,4 +288,5 @@ async findAll() {
     Object.assign(booking, updateBookingDto);
     return await this.bookingRepo.save(booking);
   }
+
 }

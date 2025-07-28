@@ -6,9 +6,10 @@ import { Booking } from './entities/booking.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Driver } from 'src/drivers/entities/driver.entity';
 import { DistanceService } from 'src/distance/distance.service';
+import { ChatsModule } from 'src/chats/chats.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Booking, User, Driver])],
+  imports: [TypeOrmModule.forFeature([Booking, User, Driver]), ChatsModule],
   controllers: [BookingsController],
   providers: [BookingsService, DistanceService],
   exports: [BookingsService], 
