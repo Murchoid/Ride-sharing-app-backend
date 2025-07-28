@@ -42,15 +42,13 @@ export class PaymentsService {
         booking:booking,
         phoneNumber: phoneNumber,
         amount: amount,
-        merchantRequestId: response.merchantRequestId,
+        merchantRequestId: response.MerchantRequestID,
+        status: 'SUCCESS', // Assuming success for now, handle actual status in callback
       });
 
-      try{
-          await this.paymentRepo.save(preparedPayment);
-      }catch(e){
-        if(e.code === '23505') throw new Error('Booking already Exist i will fix')
-        throw new Error(e);
-      }
+      console.log(preparedPayment);
+      return await this.paymentRepo.save(preparedPayment);
+      
     }
 
   }
@@ -93,5 +91,64 @@ export class PaymentsService {
     return await this.paymentRepo.findOneBy({ 
       booking: { id },
     });
+  }
+
+  async createPayment(createPaymentDto: CreatePaymentDto) {
+    const { bookingId } = createPaymentDto;
+
+    // First, set all previous payment attempts for this booking to not latest
+    await this.paymentRepo.update(
+      { bookingId },
+      { isLatestAttempt: false }
+    );
+
+    // Create new payment attempt
+    const payment = this.paymentRepo.create({
+      ...createPaymentDto,
+      isLatestAttempt: true
+    });
+
+    return await this.paymentRepo.save(payment);
+  }
+
+  async getPaymentHistory(bookingId: string) {
+    return await this.paymentRepo.find({
+      where: { bookingId },
+      order: { createdAt: 'DESC' }
+    });
+  }
+
+  async getLatestPayment(bookingId: string) {
+    return await this.paymentRepo.findOne({
+      where: { bookingId, isLatestAttempt: true }
+    });
+  }
+
+  async updatePaymentStatus(
+    paymentId: string, 
+    status: string, 
+    failureReason?: string
+  ) {
+    const payment = await this.paymentRepo.findOne({
+      where: { id: paymentId },
+      relations: ['booking']
+    });
+
+    if (!payment) {
+      throw new NotFoundException('Payment not found');
+    }
+
+    payment.status = status;
+    payment.failureReason = failureReason as string;
+
+    // If payment is successful, update booking payment status
+    if (status === 'PAID') {
+      await this.bookingRepo.update(
+        payment.bookingId,
+        { paymentStatus: 'PAID' }
+      );
+    }
+
+    return await this.paymentRepo.save(payment);
   }
 }

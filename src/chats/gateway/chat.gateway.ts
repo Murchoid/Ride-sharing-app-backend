@@ -1,45 +1,81 @@
-// src/gateway/chat.gateway.ts
+// src/chats/gateway/chat.gateway.ts
 import {
   SubscribeMessage,
   WebSocketGateway,
+  WebSocketServer,
   OnGatewayInit,
   OnGatewayConnection,
   OnGatewayDisconnect,
   MessageBody,
   ConnectedSocket,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ChatService } from '../services/chat.service';
+import { Server, Socket } from 'socket.io';
+import { Logger, UnauthorizedException } from '@nestjs/common';
+import { ChatService } from '../chats.service';
+import { ConfigService } from '@nestjs/config';
+import { CreateMessageDto } from '../dto/createMessage.dto';
 
-@WebSocketGateway({ cors: true })
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+    credentials: true,
+  },
+})
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   private logger = new Logger('ChatGateway');
   private onlineUsers = new Map<string, string>();
-  private server: Server;
+  @WebSocketServer()
+  server: Server;
 
   constructor(
     private jwtService: JwtService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private configService: ConfigService
   ) {}
 
   afterInit(server: Server) {
-    this.server = server;
+    server.on('error', (error) => {
+      console.error('Socket Server Error:', error);
+    });
     this.logger.log('WebSocket initialized');
   }
 
-  handleConnection(client: Socket) {
+  async handleConnection(client: Socket) {
+    console.log('Auth header:', client.handshake.headers.authorization);
+    console.log('Auth token:', client.handshake.auth.token);
+    
     try {
-      const token = client.handshake.auth.token;
-      const payload = this.jwtService.verify(token);
+      const token =
+        client.handshake.auth.token ||
+        client.handshake.headers.authorization?.split(' ')[1];
+
+      if (!token) {
+        throw new UnauthorizedException('No token provided');
+      }
+
+      // Verify the token
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'), 
+      });
+
+      // Store user data in socket
+      client.data.user = payload;
+
       this.onlineUsers.set(payload.sub, client.id);
       this.logger.log(`Client connected: ${client.id} (user ${payload.sub})`);
-    } catch {
-      this.logger.warn('Unauthorized socket connection');
+
+      return true;
+    } catch (error) {
+      console.error('Detailed WS Auth Error:', {
+        message: error.message,
+        stack: error.stack,
+        token: client.handshake.auth.token
+      });
       client.disconnect();
+      return false;
     }
   }
 
@@ -56,23 +92,50 @@ export class ChatGateway
   @SubscribeMessage('send_message')
   async handleMessage(
     @MessageBody()
-    data: { rideId: string; senderId: string; receiverId: string; message: string },
+    data: CreateMessageDto,
+    @ConnectedSocket() client: Socket,
   ) {
-    const receiverSocketId = this.onlineUsers.get(data.receiverId);
-    if (receiverSocketId) {
-      this.server.to(receiverSocketId).emit('receive_message', data);
+    try {
+      // Save the message
+      const savedMessage = await this.chatService.saveMessage(data);
+
+      // Get receiver's socket ID
+      const receiverSocketId = this.onlineUsers.get(data.receiverId);
+      
+      // Emit to receiver if online
+      if (receiverSocketId) {
+        this.server.to(receiverSocketId).emit('receive_message', savedMessage);
+      }
+
+      // Emit back to sender to confirm message was saved
+      client.emit('message_sent', savedMessage);
+
+      return savedMessage;
+    } catch (error) {
+      this.logger.error('Error handling message:', error);
+      client.emit('message_error', { error: 'Failed to save message' });
     }
-    await this.chatService.saveMessage(data);
   }
 
   @SubscribeMessage('send_notification')
   async handleNotification(
     @MessageBody() data: { receiverId: string; title: string; body: string },
+    @ConnectedSocket() client: Socket,
   ) {
-    const receiverSocketId = this.onlineUsers.get(data.receiverId);
-    if (receiverSocketId) {
-      this.server.to(receiverSocketId).emit('receive_notification', data);
+    try {
+      // Save notification
+      await this.chatService.saveNotification(data);
+
+      // Get receiver's socket ID
+      const receiverSocketId = this.onlineUsers.get(data.receiverId);
+      
+      // Emit to receiver if online
+      if (receiverSocketId) {
+        this.server.to(receiverSocketId).emit('receive_notification', data);
+      }
+    } catch (error) {
+      this.logger.error('Error handling notification:', error);
+      client.emit('notification_error', { error: 'Failed to save notification' });
     }
-    await this.chatService.saveNotification(data);
   }
 }

@@ -5,7 +5,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -56,14 +58,18 @@ export class Booking {
   })
   status: string;
 
-  @Column({ type: 'enum', enum: ['PENDING', 'PAID'], default: 'PENDING' })
+  @Column({ type: 'enum', enum: ['PENDING', 'PROCESSING', 'SUCCESS', 'FAILED'], default: 'PENDING' })
   paymentStatus: string;
 
   @Column({ type: 'enum', enum: ['CASH', 'MPESA'], default: 'CASH' })
   paymentMethod: string;
 
-   @OneToOne(() => Payment, payment => payment.booking, { nullable: true })
-  payment: Payment;
+  @OneToMany(() => Payment, (payment) => payment.booking)
+  payments: Payment[];
+
+  @OneToOne(() => Payment)
+  @JoinColumn()
+  latestPayment: Payment;
 
   @CreateDateColumn()
   createdAt: Date;

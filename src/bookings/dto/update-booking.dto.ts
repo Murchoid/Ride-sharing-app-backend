@@ -28,10 +28,10 @@ export class UpdateBookingPaymentMethodDto {
 export class UpdateBookingPaymentStatusDto {
   @ApiProperty({
     description: 'Payment status of the booking',
-    enum: ['PENDING', 'PAID'],
-    example: 'PAID',
+    enum: ['PENDING','PROCESSING','SUCCESS','FAILED'],
+    example: 'PENDING',
   })
-  @IsEnum(['PENDING', 'PAID'])
+  @IsEnum(['PENDING', 'PROCESSING', 'SUCCESS', 'FAILED'])
   paymentStatus: string;
 }
 

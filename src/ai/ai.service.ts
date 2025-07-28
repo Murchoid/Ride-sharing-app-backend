@@ -16,7 +16,7 @@ export class AiService {
   ) {}
 
   // Handle user prompt: could be booking or analytics or general help
-  async handleUserPrompt(prompt: string, id: string): Promise<{ booking: Booking; type: string; } | string | undefined> {
+  async handleUserPrompt(prompt: string, id: string): Promise<{ data: Booking; type: string; } | string | undefined> {
     const intent = await this.aiGemini.classifyIntent(prompt);
     const schema = this.getSchema();
     const enumSchema = this.getEnumsSchema();
@@ -185,11 +185,11 @@ async executeSQL(sql: string, id: string): Promise<string> {
       const trimmed = sql.replace('```sql', '').replace('```', '').trim();
 
       console.log(trimmed);
-      const injected = trimmed.replace(/{{id}}/g, `${id}`);
+      //const injected = trimmed.replace(/{{id}}/g, `${id}`);
       
 
       if (trimmed.startsWith('SELECT') || trimmed.startsWith('WITH')) {
-        const result = await this.dataSource.query(injected);
+        const result = await this.dataSource.query(trimmed, [id]);
 
         //convert sql response to data that can be used in a table
         const tbData = result.map((row: any) => {
@@ -235,7 +235,7 @@ async executeSQL(sql: string, id: string): Promise<string> {
       console.log(preparedBooking);
       const booking = await this.bookingService.create(preparedBooking);
 
-      return {booking, type: 'booking'};
+      return {data: booking, type: 'booking'};
     }
 
     async getCoords(address: string): Promise<{ lat: number, lng: number }> {

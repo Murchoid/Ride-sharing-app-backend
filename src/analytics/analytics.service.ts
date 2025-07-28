@@ -23,7 +23,7 @@ export class AnalyticsService {
 
     if (!bookings) throw new NotFoundException('No info found on this user');
     const totalMoneySpent = bookings.reduce(
-      (sum, b) => sum + (b.paymentStatus == 'PAID' ? b.price : 0),
+      (sum, b) => sum + (b.paymentStatus == 'SUCCESS' ? b.price : 0),
       0,
     );
 
@@ -40,7 +40,7 @@ export class AnalyticsService {
 
     if (!bookings) throw new NotFoundException('No info found on this driver');
     const totalEarnings = bookings.reduce(
-      (sum, b) => (b.paymentStatus == 'PAID' ? b.price : 0),
+      (sum, b) => (b.paymentStatus == 'SUCCESS' ? b.price : 0),
       0,
     );
     const averageDistance = bookings.length
@@ -64,7 +64,7 @@ export class AnalyticsService {
     const totalRevenue = await this.bookingRepo
       .createQueryBuilder('booking')
       .select('SUM(booking.price)', 'total')
-      .where('booking.paymentStatus = :status', { status: 'PAID' })
+      .where('booking.paymentStatus = :status', { status: 'SUCCESS' })
       .getRawOne();
 
     const activeBookings = await this.bookingRepo.count({

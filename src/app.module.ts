@@ -18,6 +18,9 @@ import { RolesGuard } from './auths/guards/roles.guards';
 import { PaymentsModule } from './payments/payments.module';
 import { AiModule } from './ai/ai.module';
 import { ChatsModule } from './chats/chats.module';
+import { ChatGateway } from './chats/gateway/chat.gateway';
+import { ChatService } from './chats/chats.service';
+import { ChatController } from './chats/chats.controller';
 
 @Module({
   imports: [
@@ -69,7 +72,7 @@ import { ChatsModule } from './chats/chats.module';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
-    },
+    }
   ],
 })
 export class AppModule {}

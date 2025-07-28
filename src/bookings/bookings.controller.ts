@@ -27,13 +27,13 @@ export class BookingsController {
   }
 
   @ApiOperation({ summary: 'Get user bookings', description: 'Gets all bookings for the authenticated user (admin only)' })
-  @ROLES(eROLE.ADMIN, eROLE.DRIVER)
+  @ROLES(eROLE.ADMIN, eROLE.DRIVER, eROLE.CUSTOMER)
   @Get()
   findAll() {
     return this.bookingsService.findAll();
   }
   @ApiOperation({ summary: 'Get user own booking details', description: 'Get own bookings' })
-  @ROLES(eROLE.CUSTOMER)
+  @ROLES(eROLE.CUSTOMER, eROLE.DRIVER)
   @Get('/me')
   findOwn(@Req() req: RequestWithUser) {
     const { sub } = req.user;
@@ -52,8 +52,9 @@ export class BookingsController {
   @Patch(':id/status')
   updateBookingStatus(
     @Param('id') id: string,
-    @Body() body: UpdateBookingStatusDto,
+    @Body() body: any,
   ) {
+    console.log(body);
     return this.bookingsService.updateBookingStatus(id, body.status);
   }
 
@@ -85,11 +86,12 @@ export class BookingsController {
   @Patch(':id/payment-status')
   updatePayment(
     @Param('id') id: string,
-    @Body() body: UpdateBookingPaymentStatusDto,
+    @Body() body: any,
   ) {
+    console.log("boyd in controller ", body);
     return this.bookingsService.updateBookingPaymentStatus(
       id,
-      body.paymentStatus,
+      body.bookingData.paymentStatus,
     );
   }
 

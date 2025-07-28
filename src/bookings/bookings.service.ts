@@ -160,12 +160,13 @@ async findAll() {
       relations: ['driver'],
     });
 
-    if (!booking) throw new NotFoundException('Booking not found!');
+    if (!booking) throw new Error('Booking not found!');
 
     //Only update payment status if its pending
     if(booking.paymentStatus == 'PENDING')
     booking.paymentStatus = paymentSatus;
 
+    console.log("booking", booking);
     return await this.bookingRepo.save(booking);
   }
 

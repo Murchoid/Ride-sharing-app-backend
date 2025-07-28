@@ -41,7 +41,8 @@ You are a PostgreSQL assistant. Based on the schemas below, generate a safe SELE
 
 - Always use double quotes for all column and table names (e.g. "createdAt", "paymentStatus").
 - Only return SQL. Start with SELECT.
-- If the query requires filtering by a specific  ID, use the placeholder {{id}} in the SQL.
+- If the query requires filtering by a specific ID, use PostgreSQL parameter placeholders like $1.
+
 
 Enums schema:
 ${enumSchema}

@@ -1,26 +1,41 @@
 import { Booking } from "src/bookings/entities/booking.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class Payment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToOne(() => Booking, booking => booking.payment)
-  @JoinColumn()
+  @ManyToOne(() => Booking, booking => booking.payments)
   booking: Booking;
+
+  @Column()
+  bookingId: string;
 
   @Column()
   phoneNumber: string;
 
-  @Column('float')
+  @Column('decimal', { precision: 10, scale: 2 })
   amount: number;
 
-  @Column({nullable:true})
-  merchantRequestId: string
+  @Column({ nullable: true })
+  merchantRequestId: string;
 
-  @Column({ type: 'enum', enum: ['PENDING', 'SUCCESS', 'FAILED'], default: 'PENDING' })
+  @Column({
+    type: 'enum',
+    enum: ['PENDING', 'PROCESSING', 'SUCCESS', 'FAILED'],
+    default: 'PENDING'
+  })
   status: string;
+
+  @Column({ nullable: true })
+  failureReason: string;
+
+  @Column({ nullable: true })
+  transactionId: string;
+
+  @Column({ default: false })
+  isLatestAttempt: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
